@@ -2,6 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.dagger.hilt)
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 android {
@@ -40,6 +44,38 @@ android {
 }
 
 dependencies {
+    // Hilt
+    implementation (libs.hilt.android)
+    kapt (libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    // ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.runtime.livedata)
+
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.okhttp)
+    implementation (libs.logging.interceptor)
+
+    // Paging
+    implementation (libs.androidx.paging.runtime.ktx)
+    implementation (libs.androidx.paging.compose)
+    implementation (libs.androidx.paging.common)
+
+    // Room
+    implementation (libs.androidx.room.ktx)
+    ksp (libs.androidx.room.compiler)
+    implementation (libs.androidx.room.paging)
+    implementation (libs.androidx.datastore.preferences)
+
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.coil.compose)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
