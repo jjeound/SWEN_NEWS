@@ -1,34 +1,60 @@
 package com.example.news.ui.theme
 
-import androidx.compose.material3.Typography
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.news.R
 
-// Set of Material typography styles to start with
-val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
-)
+@Immutable
+public data class CustomTypography(
+    val appBarTitle: TextStyle,
+    val option: TextStyle,
+    val headlineSmall: TextStyle,
+    val header: TextStyle,
+    val headlineLarge: TextStyle,
+    val more: TextStyle,
+    val percent: TextStyle,
+    val button: TextStyle,
+    val counts: TextStyle,
+    val body: TextStyle,
+    val keywordLarge: TextStyle,
+    val keywordMedium: TextStyle,
+    val keywordSmall: TextStyle,
+    val time: TextStyle,
+    val pager: TextStyle,
+    val badge: TextStyle,
+    val media: TextStyle,
+    val description: TextStyle,
+    val menu: TextStyle,
+){
+    public companion object {
+        @Composable
+        public fun defaultCustomTypography(fontFamily: FontFamily): CustomTypography = CustomTypography(
+            appBarTitle = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Bold, fontSize = 14.sp),
+            option = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Medium, fontSize = 12.sp),
+            headlineSmall = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Bold, fontSize = 14.sp),
+            header = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Bold, fontSize = 14.sp),
+            headlineLarge = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.ExtraBold, fontSize = 24.sp, lineHeight = 30.sp),
+            more = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Normal, fontSize = 12.sp),
+            percent = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Normal, fontSize = 8.sp),
+            button = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Light, fontSize = 14.sp),
+            counts = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Normal, fontSize = 10.sp),
+            body = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Normal, fontSize = 14.sp),
+            keywordLarge = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp),
+            keywordMedium = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Bold, fontSize = 15.sp),
+            keywordSmall = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Light, fontSize = 10.sp),
+            time = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Light, fontSize = 10.sp),
+            pager = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Bold, fontSize = 14.sp),
+            badge = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Normal, fontSize = 10.sp),
+            media = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Medium, fontSize = 14.sp),
+            description = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Medium, fontSize = 12.sp),
+            menu = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Normal, fontSize = 16.sp),
+        )
+    }
+}
