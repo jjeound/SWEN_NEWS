@@ -9,4 +9,6 @@ sealed interface Screen{
     data class More(val isFirst: Boolean): Screen
     @Serializable
     data class Detail(val id: Long): Screen
+    @Serializable
+    data object Setting: Screen
 }
