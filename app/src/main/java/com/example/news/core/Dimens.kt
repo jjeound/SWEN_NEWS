@@ -9,5 +9,7 @@ object Dimens {
     val gapMedium = 10.dp
     val gapSmall = 4.dp
     val cornerRadius = 12.dp
+    val circle = 48.dp
     val border = 1.dp
+    val shadow = 4.dp
 }
