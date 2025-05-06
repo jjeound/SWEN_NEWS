@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -25,11 +24,13 @@ import androidx.compose.ui.res.vectorResource
 import com.example.news.R
 import com.example.news.core.Dimens
 import com.example.news.data.model.News
+import com.example.news.feature.home.composable.NewsCard
 import com.example.news.ui.theme.NewsTheme
 
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
+    navigateToMore: (Boolean) -> Unit,
 ) {
     val hotNewsUiState by homeViewModel.hotNewsUiState.collectAsStateWithLifecycle()
     val latestNewsUiState by homeViewModel.latestNewsUiState.collectAsStateWithLifecycle()
@@ -48,6 +49,7 @@ fun HomeScreen(
             latestNewsList = latestNewsList,
             fetchNextHotNews = homeViewModel::fetchNextHotNewsList,
             fetchNextLatestNews = homeViewModel::fetchNextLatestNewsList,
+            navigateToMore = navigateToMore
         )
     }
 }
@@ -60,6 +62,7 @@ private fun HomeContent(
     latestNewsList: List<News>,
     fetchNextHotNews: () -> Unit,
     fetchNextLatestNews: () -> Unit,
+    navigateToMore: (Boolean) -> Unit
 ){
     Column(
         modifier = Modifier.fillMaxSize().padding(
@@ -68,24 +71,36 @@ private fun HomeContent(
         ),
         verticalArrangement = Arrangement.spacedBy(Dimens.gapLarge)
     ) {
-
+        NewsList(
+            uiState = hotNewsUiState,
+            newsList = hotNewsList,
+            fetchNextNews = fetchNextHotNews,
+            navigateToMore = navigateToMore,
+            isFirst = true
+        )
+        NewsList(
+            uiState = latestNewsUiState,
+            newsList = latestNewsList,
+            fetchNextNews = fetchNextLatestNews,
+            navigateToMore = navigateToMore,
+            isFirst = false
+        )
     }
 }
-
-
 
 @Composable
 private fun NewsList(
     uiState: HomeUiState,
     newsList: List<News>,
     fetchNextNews: () -> Unit,
+    navigateToMore: (Boolean) -> Unit,
+    isFirst : Boolean
 ){
     Box(modifier = Modifier.fillMaxSize()) {
         val threadHold = 8
         LazyColumn(
             modifier = Modifier.padding(Dimens.verticalPadding),
             verticalArrangement = Arrangement.spacedBy(Dimens.gapMedium),
-            state = rememberLazyListState(),
         ) {
             stickyHeader {
                 Row(
@@ -94,16 +109,18 @@ private fun NewsList(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
-                        text = "핫 뉴스 \uD83D\uDE80",
+                        text = if(isFirst)"핫 뉴스 \uD83D\uDE80" else "최신 뉴스 \uD83D\uDCF0",
                         style = NewsTheme.typography.header,
                         color = NewsTheme.colors.textPrimary
                     )
                     Row(
-                        modifier = Modifier.clickable{},
+                        modifier = Modifier.clickable{
+                            navigateToMore(isFirst)
+                        },
                     ) {
                         Text(
-                            text = "더보기",
-                            style = NewsTheme.typography.more,
+                            text = "전체 보기",
+                            style = NewsTheme.typography.viewAll,
                             color = NewsTheme.colors.textThird,
                         )
                         Icon(
@@ -115,11 +132,23 @@ private fun NewsList(
                 }
             }
             itemsIndexed(items = newsList, key = { _, news -> news.id }) { index, news ->
-                if ((index + threadHold) >= newsList.size && uiState != HomeUiState.Loading) {
-                    fetchNextNews()
-                }
+//                if ((index + threadHold) >= newsList.size && uiState != HomeUiState.Loading) {
+//                    fetchNextNews()
+//                }
                 NewsCard(
-                    news = news
+                    news = news,
+                    navigateToDetail = {}
+                )
+            }
+            item {
+                Text(
+                    modifier = Modifier.clickable{
+                        if(newsList.size >= threadHold && uiState != HomeUiState.Loading) {
+                            fetchNextNews()
+                        }
+                    },
+                    text = "더보기",
+                    style = NewsTheme.typography.more,
                 )
             }
         }
@@ -132,16 +161,5 @@ private fun NewsList(
                 strokeWidth = Dimens.border
             )
         }
-    }
-}
-
-@Composable
-private fun NewsCard(
-    news: News
-){
-    Row(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-
     }
 }
