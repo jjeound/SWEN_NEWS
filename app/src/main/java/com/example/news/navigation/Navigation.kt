@@ -8,6 +8,7 @@ import androidx.navigation.toRoute
 import com.example.news.feature.detail.DetailScreen
 import com.example.news.feature.home.HomeScreen
 import com.example.news.feature.more.MoreScreen
+import com.example.news.feature.setting.SettingScreen
 
 @Composable
 fun Navigation(navHostController: NavHostController){
@@ -19,7 +20,7 @@ fun Navigation(navHostController: NavHostController){
             HomeScreen(
                 navigateToMore = { isFirst ->
                     navHostController.navigate(Screen.More(isFirst))
-                },
+                }
             )
         }
         composable<Screen.More>{
@@ -28,11 +29,25 @@ fun Navigation(navHostController: NavHostController){
                 isFirst = args.isFirst,
                 navigateToDetail = { newsId ->
                     navHostController.navigate(Screen.Detail(newsId))
+                },
+                navigateUp = {
+                    navHostController.popBackStack()
                 }
             )
         }
         composable<Screen.Detail>{
-            DetailScreen()
+            DetailScreen(
+                navigateUp = {
+                    navHostController.popBackStack()
+                }
+            )
+        }
+        composable<Screen.Setting>{
+            SettingScreen(
+                navigateUp = {
+                    navHostController.popBackStack()
+                }
+            )
         }
     }
 }
