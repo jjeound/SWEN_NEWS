@@ -15,7 +15,8 @@ import com.example.news.ui.theme.NewsTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreTopBar(
-    isFirst: Boolean
+    isFirst: Boolean,
+    navigateUp: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -30,7 +31,9 @@ fun MoreTopBar(
         ),
         navigationIcon = {
             IconButton(
-                onClick = {}
+                onClick = {
+                    navigateUp()
+                }
             ){
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.chevron_left),

@@ -32,6 +32,7 @@ fun MoreScreen(
     viewModel: MoreViewModel = hiltViewModel(),
     isFirst: Boolean,
     navigateToDetail: (Long) -> Unit,
+    navigateUp: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val newsList by if(isFirst) viewModel.hotNewsList.collectAsStateWithLifecycle() else viewModel.latestNewsList.collectAsStateWithLifecycle()
@@ -39,7 +40,10 @@ fun MoreScreen(
     Column(
         modifier = Modifier.fillMaxSize()
     ){
-        MoreTopBar(isFirst = isFirst)
+        MoreTopBar(
+            isFirst = isFirst,
+            navigateUp = navigateUp
+        )
         Column(
             modifier = Modifier.fillMaxSize().padding(
                 horizontal = Dimens.horizontalPadding,
