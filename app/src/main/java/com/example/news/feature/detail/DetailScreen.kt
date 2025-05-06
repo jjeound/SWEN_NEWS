@@ -51,6 +51,7 @@ import com.example.news.data.model.Source
 @Composable
 fun DetailScreen(
     viewModel: DetailViewModel = hiltViewModel(),
+    navigateUp: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val newsDetail by viewModel.newsDetail.collectAsStateWithLifecycle()
@@ -64,7 +65,9 @@ fun DetailScreen(
             title = {},
             navigationIcon = {
                 IconButton(
-                    onClick = {}
+                    onClick = {
+                        navigateUp()
+                    }
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.chevron_left),
