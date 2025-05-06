@@ -1,0 +1,83 @@
+package com.example.news.feature.home.composable
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import com.example.news.core.Dimens
+import com.example.news.data.model.News
+import com.example.news.ui.theme.NewsTheme
+
+@Composable
+fun NewsCard(
+    news: News,
+    navigateToDetail: (Long) -> Unit,
+){
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(
+            vertical = Dimens.verticalPadding
+        ).clickable{
+            navigateToDetail(news.id)
+        },
+        horizontalArrangement = Arrangement.spacedBy(Dimens.gapMedium),
+    ) {
+        AsyncImage(
+            model = news.thumbnail,
+            contentDescription = news.title,
+            alignment = Alignment.Center,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.size(92.dp)
+        )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(Dimens.gapSmall)
+        ) {
+            Text(
+                text = news.title,
+                style = NewsTheme.typography.headlineSmall,
+                color = NewsTheme.colors.textPrimary
+            )
+            Row(
+                modifier = Modifier.padding(
+                    vertical = Dimens.gapSmall
+                )
+            ) {
+                HorizontalDivider(
+                    modifier = Modifier.width(news.left.dp),
+                    thickness = Dimens.gapSmall,
+                    color = NewsTheme.colors.blueBias
+                )
+                HorizontalDivider(
+                    modifier = Modifier.width(news.center.dp),
+                    thickness = Dimens.gapSmall,
+                    color = NewsTheme.colors.center
+                )
+                HorizontalDivider(
+                    modifier = Modifier.width(news.right.dp),
+                    thickness = Dimens.gapSmall,
+                    color = NewsTheme.colors.redBias
+                )
+                Spacer(
+                    modifier = Modifier.width(Dimens.gapSmall)
+                )
+                Text(
+                    text = "좌 ${news.left}% 중도 ${news.center}% 우 ${news.right}%",
+                    style = NewsTheme.typography.percent,
+                    color = NewsTheme.colors.textSecondary
+                )
+            }
+        }
+    }
+}
