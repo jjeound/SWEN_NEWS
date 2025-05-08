@@ -3,6 +3,7 @@ package com.example.news.feature.home
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.news.data.dto.ClusterX
 import com.example.news.data.model.News
 import com.example.news.data.repository.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +27,7 @@ class HomeViewModel @Inject constructor(
     private val latestNewsFetchingIndex: MutableStateFlow<Int> = MutableStateFlow(0)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val hotNewsList: StateFlow<List<News>> = hotNewsFetchingIndex.flatMapLatest { page ->
+    val hotNewsList: StateFlow<List<ClusterX>> = hotNewsFetchingIndex.flatMapLatest { page ->
         repository.fetchHotNews(
             page = page,
             onStart = { hotNewsUiState.tryEmit(HomeUiState.Loading) },
@@ -40,7 +41,7 @@ class HomeViewModel @Inject constructor(
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val latestNewsList: StateFlow<List<News>> = latestNewsFetchingIndex.flatMapLatest { page ->
+    val latestNewsList: StateFlow<List<ClusterX>> = latestNewsFetchingIndex.flatMapLatest { page ->
         repository.fetchLatestNews(
             page = page,
             onStart = { latestNewsUiState.tryEmit(HomeUiState.Loading) },

@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import com.example.news.R
 import com.example.news.core.Dimens
+import com.example.news.data.dto.ClusterX
 import com.example.news.data.model.News
 import com.example.news.feature.home.composable.NewsCard
 import com.example.news.ui.theme.NewsTheme
@@ -58,8 +59,8 @@ fun HomeScreen(
 private fun HomeContent(
     hotNewsUiState: HomeUiState,
     latestNewsUiState: HomeUiState,
-    hotNewsList: List<News>,
-    latestNewsList: List<News>,
+    hotNewsList: List<ClusterX>,
+    latestNewsList: List<ClusterX>,
     fetchNextHotNews: () -> Unit,
     fetchNextLatestNews: () -> Unit,
     navigateToMore: (Boolean) -> Unit
@@ -91,7 +92,7 @@ private fun HomeContent(
 @Composable
 private fun NewsList(
     uiState: HomeUiState,
-    newsList: List<News>,
+    newsList: List<ClusterX>,
     fetchNextNews: () -> Unit,
     navigateToMore: (Boolean) -> Unit,
     isFirst : Boolean
@@ -131,26 +132,26 @@ private fun NewsList(
                     }
                 }
             }
-            itemsIndexed(items = newsList, key = { _, news -> news.id }) { index, news ->
-//                if ((index + threadHold) >= newsList.size && uiState != HomeUiState.Loading) {
-//                    fetchNextNews()
-//                }
-                NewsCard(
-                    news = news,
-                    navigateToDetail = {}
-                )
-            }
-            item {
-                Text(
-                    modifier = Modifier.clickable{
-                        if(newsList.size >= threadHold && uiState != HomeUiState.Loading) {
-                            fetchNextNews()
-                        }
-                    },
-                    text = "더보기",
-                    style = NewsTheme.typography.more,
-                )
-            }
+//            itemsIndexed(items = newsList, key = { _, news -> news.id }) { index, news ->
+////                if ((index + threadHold) >= newsList.size && uiState != HomeUiState.Loading) {
+////                    fetchNextNews()
+////                }
+//                NewsCard(
+//                    news = news,
+//                    navigateToDetail = {}
+//                )
+//            }
+//            item {
+//                Text(
+//                    modifier = Modifier.clickable{
+//                        if(newsList.size >= threadHold && uiState != HomeUiState.Loading) {
+//                            fetchNextNews()
+//                        }
+//                    },
+//                    text = "더보기",
+//                    style = NewsTheme.typography.more,
+//                )
+//            }
         }
 
         if (uiState == HomeUiState.Loading) {
