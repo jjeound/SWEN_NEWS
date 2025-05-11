@@ -9,17 +9,17 @@ data class NewsInfo(
     val articleUrls: List<String>,
     @SerializedName("bias_ratio")
     val biasRatio: BiasRatio,
-    val center: Center,
+    val center: Center?,
     @SerializedName("created_at")
     val createdAt: String,
-    val left: Left,
+    val left: Left?,
     @SerializedName("media_counts")
     val mediaCounts: MediaCounts,
     @SerializedName("model_ver")
     val modelVer: String,
     @SerializedName("press_list")
     val pubDate: String,
-    val right: Right,
+    val right: Right?,
     val title: String,
     @SerializedName("updated_at")
     val updatedAt: String
