@@ -63,8 +63,8 @@ public data class Colors(
 
         @Composable
         public fun defaultLightColors(): Colors = Colors(
-            surface = colorResource(id = R.color.black_700),
-            textPrimary = colorResource(id = R.color.white_700),
+            surface = colorResource(id = R.color.white_700),
+            textPrimary = colorResource(id = R.color.black_700),
             textSecondary = colorResource(id = R.color.white_300),
             textThird = colorResource(id = R.color.white_100),
             optionBorderUnfocused = colorResource(id = R.color.black_400),
