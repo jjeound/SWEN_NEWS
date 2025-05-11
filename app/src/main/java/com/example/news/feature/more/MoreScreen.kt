@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -43,6 +44,11 @@ fun MoreScreen(
         MoreTopBar(
             isFirst = isFirst,
             navigateUp = navigateUp
+        )
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            thickness = Dimens.border,
+            color = NewsTheme.colors.divider
         )
         Column(
             modifier = Modifier.fillMaxSize().padding(
@@ -84,7 +90,6 @@ fun CategoryTab(
             Card(
                 modifier = Modifier
                     .wrapContentSize()
-                    .padding(Dimens.verticalPadding)
                     .clickable {
                         selectedIndex = index
                         onTabSelected(category.eng)
@@ -96,6 +101,8 @@ fun CategoryTab(
                 )
             ) {
                 Box(
+                    modifier = Modifier
+                        .padding(Dimens.verticalPadding),
                     contentAlignment = Alignment.Center
                 ){
                     Text(
@@ -116,7 +123,10 @@ private fun NewsList(
     fetchNextNews: () -> Unit,
     navigateToDetail: (String) -> Unit
 ){
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
         val threadHold = 0
         LazyColumn(
             modifier = Modifier.padding(Dimens.verticalPadding),
