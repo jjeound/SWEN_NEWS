@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,6 +48,11 @@ fun HomeScreen(
     ) {
         HomeTopBar(
             navigateToSetting = navigateToSetting
+        )
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            thickness = Dimens.border,
+            color = NewsTheme.colors.divider
         )
         HomeContent(
             hotNewsUiState = hotNewsUiState,
@@ -107,8 +113,11 @@ private fun NewsList(
     navigateToDetail: (String) -> Unit,
     isFirst : Boolean
 ){
-    Box(modifier = Modifier.fillMaxSize()) {
-        val threadHold = 8
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        val threadHold = 0
         LazyColumn(
             modifier = Modifier.padding(Dimens.verticalPadding),
             verticalArrangement = Arrangement.spacedBy(Dimens.gapMedium),
@@ -156,20 +165,36 @@ private fun NewsList(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text(
-                        modifier = Modifier.clickable{
-                            if(newsList.size >= threadHold && uiState != HomeUiState.Loading) {
-                                fetchNextNews()
-                            }
-                        },
-                        text = "더보기",
-                        style = NewsTheme.typography.more,
-                    )
+                    if (newsList.isNotEmpty() && uiState == HomeUiState.Loading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .wrapContentSize()
+                                .padding(Dimens.gapLarge),
+                            strokeWidth = Dimens.border
+                        )
+                    }
+                }
+            }
+            item {
+                if(newsList.isNotEmpty()){
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            modifier = Modifier.clickable{
+                                if(newsList.size >= threadHold && uiState != HomeUiState.Loading) {
+                                    fetchNextNews()
+                                }
+                            },
+                            text = "더보기",
+                            style = NewsTheme.typography.more,
+                        )
+                    }
                 }
             }
         }
-
-        if (uiState == HomeUiState.Loading) {
+        if (uiState == HomeUiState.Loading && newsList.isEmpty()) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .wrapContentSize()
