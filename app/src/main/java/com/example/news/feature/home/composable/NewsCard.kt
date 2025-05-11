@@ -1,7 +1,9 @@
 package com.example.news.feature.home.composable
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,14 +11,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.news.R
 import com.example.news.core.Dimens
 import com.example.news.data.model.News
 import com.example.news.ui.theme.NewsTheme
@@ -24,7 +30,7 @@ import com.example.news.ui.theme.NewsTheme
 @Composable
 fun NewsCard(
     news: News,
-    navigateToDetail: (Long) -> Unit,
+    navigateToDetail: (String) -> Unit,
 ){
     Row(
         modifier = Modifier.fillMaxWidth().padding(
@@ -34,13 +40,21 @@ fun NewsCard(
         },
         horizontalArrangement = Arrangement.spacedBy(Dimens.gapMedium),
     ) {
-        AsyncImage(
-            model = news.thumbnail,
-            contentDescription = news.title,
-            alignment = Alignment.Center,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.size(92.dp)
-        )
+        if(news.thumbnail != null){
+            AsyncImage(
+                model = news.thumbnail,
+                contentDescription = news.title,
+                alignment = Alignment.Center,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(92.dp)
+            )
+        }else{
+            Image(
+                imageVector = ImageVector.vectorResource(R.drawable.ic_launcher_foreground),
+                contentDescription = news.title,
+                modifier = Modifier.size(92.dp)
+            )
+        }
         Column(
             verticalArrangement = Arrangement.spacedBy(Dimens.gapSmall)
         ) {
