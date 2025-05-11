@@ -4,8 +4,8 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.news.data.dto.NewsInfo
 import com.example.news.data.model.News
-import com.example.news.data.model.NewsDetail
 import com.example.news.data.repository.DetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,9 +27,9 @@ class DetailViewModel @Inject constructor(
 
     val news = savedStateHandle.getStateFlow<News?>("news", null)
     @OptIn(ExperimentalCoroutinesApi::class)
-    val newsDetail: StateFlow<NewsDetail?> =
+    val newsDetail: StateFlow<NewsInfo?> =
         news.filterNotNull().flatMapLatest { news ->
-            repository.fetchNewsDetail (
+            repository.fetchNewsDetail(
                 id = news.id,
                 onComplete = { uiState.tryEmit(DetailsUiState.Idle) },
                 onError = { uiState.tryEmit(DetailsUiState.Error(it)) },

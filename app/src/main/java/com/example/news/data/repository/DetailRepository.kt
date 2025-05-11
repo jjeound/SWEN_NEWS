@@ -1,12 +1,12 @@
 package com.example.news.data.repository
 
-import com.example.news.data.model.NewsDetail
+import com.example.news.data.dto.NewsInfo
 import kotlinx.coroutines.flow.Flow
 
 interface DetailRepository {
     suspend fun fetchNewsDetail(
-        id: Long,
+        id: String,
         onComplete: () -> Unit,
         onError: (String?) -> Unit,
-    ): Flow<NewsDetail?>
+    ): Flow<NewsInfo?>
 }
