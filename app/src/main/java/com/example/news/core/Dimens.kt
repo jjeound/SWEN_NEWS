@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.dp
 object Dimens {
     val horizontalPadding = 20.dp
     val verticalPadding = 10.dp
+    val gapHuge = 40.dp
     val gapLarge = 20.dp
     val gapMedium = 10.dp
     val gapSmall = 4.dp
