@@ -6,33 +6,21 @@ import com.example.news.data.repository.HomeRepository
 import com.example.news.data.repository.HomeRepositoryImpl
 import com.example.news.data.repository.MoreRepository
 import com.example.news.data.repository.MoreRepositoryImpl
-import com.example.news.data.service.NewsClient
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
-
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DataModule {
+internal interface DataModule {
 
-    @Provides
-    @Singleton
-    fun provideHomeRepository(client: NewsClient): HomeRepository{
-        return HomeRepositoryImpl(client)
-    }
+    @Binds
+    fun bindsHomeRepository(homeRepositoryImpl: HomeRepositoryImpl): HomeRepository
 
-    @Provides
-    @Singleton
-    fun provideMoreRepository(client: NewsClient): MoreRepository{
-        return MoreRepositoryImpl(client)
-    }
+    @Binds
+    fun bindsMoreRepository(moreRepositoryImpl: MoreRepositoryImpl): MoreRepository
 
-    @Provides
-    @Singleton
-    fun provideDetailRepository(client: NewsClient): DetailRepository{
-        return DetailRepositoryImpl(client)
-    }
+    @Binds
+    fun bindsDetailRepository(detailRepositoryImpl: DetailRepositoryImpl): DetailRepository
 }
