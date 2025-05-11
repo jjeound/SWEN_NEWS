@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -70,6 +71,9 @@ fun DetailScreen(
     ) {
         TopAppBar(
             title = {},
+            colors = TopAppBarDefaults.topAppBarColors().copy(
+                containerColor = NewsTheme.colors.surface,
+            ),
             navigationIcon = {
                 IconButton(
                     onClick = {
@@ -87,7 +91,10 @@ fun DetailScreen(
         if (uiState == DetailsUiState.Idle && newsInfo != null) {
             DetailContent(newsInfo = newsInfo!!)
         } else {
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
                 CircularProgressIndicator(
                     modifier = Modifier.wrapContentSize(),
                     color = NewsTheme.colors.iconDefault
@@ -128,55 +135,88 @@ private fun DetailContent(
         )
         when(selectedIndex){
             0 -> {
-                Summary(
-                    summary = newsInfo.left.summary,
-                    counts = newsInfo.articleIds.size,
-                    biasRatio = newsInfo.biasRatio,
-                    selectedIndex = selectedIndex,
-                    onClick = {
-                        selectedIndex = it
-                    }
-                )
-                KeywordAnalysis(
-                    keyword = newsInfo.left.keywords
-                )
-                MediaList(
-                    media = newsInfo.left.articleIds
-                )
+                if (newsInfo.left != null){
+                    Summary(
+                        summary = newsInfo.left.summary,
+                        counts = newsInfo.articleIds.size,
+                        biasRatio = newsInfo.biasRatio,
+                        selectedIndex = selectedIndex,
+                        onClick = {
+                            selectedIndex = it
+                        }
+                    )
+                    KeywordAnalysis(
+                        keyword = newsInfo.left.keywords
+                    )
+                    MediaList(
+                        media = newsInfo.left.articleIds
+                    )
+                } else {
+                    Summary(
+                        counts = newsInfo.articleIds.size,
+                        biasRatio = newsInfo.biasRatio,
+                        selectedIndex = selectedIndex,
+                        onClick = {
+                            selectedIndex = it
+                        }
+                    )
+                }
             }
             1 -> {
-                Summary(
-                    summary = newsInfo.center.summary,
-                    counts = newsInfo.articleIds.size,
-                    biasRatio = newsInfo.biasRatio,
-                    selectedIndex = selectedIndex,
-                    onClick = {
-                        selectedIndex = it
-                    }
-                )
-                KeywordAnalysis(
-                    keyword = newsInfo.center.keywords
-                )
-                MediaList(
-                    media = newsInfo.center.articleIds
-                )
+                if(newsInfo.center != null){
+                    Summary(
+                        summary = newsInfo.center.summary,
+                        counts = newsInfo.articleIds.size,
+                        biasRatio = newsInfo.biasRatio,
+                        selectedIndex = selectedIndex,
+                        onClick = {
+                            selectedIndex = it
+                        }
+                    )
+                    KeywordAnalysis(
+                        keyword = newsInfo.center.keywords
+                    )
+                    MediaList(
+                        media = newsInfo.center.articleIds
+                    )
+                }else {
+                    Summary(
+                        counts = newsInfo.articleIds.size,
+                        biasRatio = newsInfo.biasRatio,
+                        selectedIndex = selectedIndex,
+                        onClick = {
+                            selectedIndex = it
+                        }
+                    )
+                }
             }
             2 -> {
-                Summary(
-                    summary = newsInfo.right.summary,
-                    counts = newsInfo.articleIds.size,
-                    biasRatio = newsInfo.biasRatio,
-                    selectedIndex = selectedIndex,
-                    onClick = {
-                        selectedIndex = it
-                    }
-                )
-                KeywordAnalysis(
-                    keyword = newsInfo.right.keywords
-                )
-                MediaList(
-                    media = newsInfo.right.articleIds
-                )
+                if(newsInfo.right != null){
+                    Summary(
+                        summary = newsInfo.right.summary,
+                        counts = newsInfo.articleIds.size,
+                        biasRatio = newsInfo.biasRatio,
+                        selectedIndex = selectedIndex,
+                        onClick = {
+                            selectedIndex = it
+                        }
+                    )
+                    KeywordAnalysis(
+                        keyword = newsInfo.right.keywords
+                    )
+                    MediaList(
+                        media = newsInfo.right.articleIds
+                    )
+                }else {
+                    Summary(
+                        counts = newsInfo.articleIds.size,
+                        biasRatio = newsInfo.biasRatio,
+                        selectedIndex = selectedIndex,
+                        onClick = {
+                            selectedIndex = it
+                        }
+                    )
+                }
             }
         }
         MediaOpList(
@@ -193,7 +233,7 @@ private fun DetailContent(
 
 @Composable
 private fun Summary(
-    summary: String,
+    summary: String? = null,
     counts: Int,
     biasRatio: BiasRatio,
     selectedIndex : Int,
@@ -281,14 +321,28 @@ private fun Summary(
                 color = NewsTheme.colors.textThird
             )
         }
-        // Percent
-        val text = summary.split(".")
-        text.forEach { it ->
-            Text(
-                text = it,
-                style = NewsTheme.typography.body,
-                color = NewsTheme.colors.textPrimary
-            )
+        if(summary != null){
+            val text = summary.split(".")
+            text.forEach { it ->
+                Text(
+                    text = it,
+                    style = NewsTheme.typography.body,
+                    color = NewsTheme.colors.textPrimary
+                )
+            }
+        }else{
+            Box(
+                modifier = Modifier.fillMaxWidth().padding(
+                    vertical = Dimens.gapHuge
+                ),
+                contentAlignment = Alignment.Center
+            ){
+                Text(
+                    text = "데이터가 없습니다.",
+                    style = NewsTheme.typography.body,
+                    color = NewsTheme.colors.textPrimary
+                )
+            }
         }
     }
 }
@@ -423,9 +477,9 @@ private fun MediaOpList(
 @Composable
 private fun OriginalSource(
     sourceAll: List<String>,
-    sourceLeft: Left,
-    sourceCenter: Center,
-    sourceRight: Right,
+    sourceLeft: Left?,
+    sourceCenter: Center?,
+    sourceRight: Right?,
 ){
     var selectedIndex = 0
     val options = listOf("전체", "좌", "중도", "우")
@@ -457,10 +511,10 @@ private fun OriginalSource(
                             color = NewsTheme.colors.textPrimary
                         )
                         val counts = when(selectedIndex){
-                            0 -> sourceLeft.articleUrls.size + sourceCenter.articleUrls.size + sourceRight.articleUrls.size
-                            1 -> sourceLeft.articleUrls.size
-                            2 -> sourceCenter.articleUrls.size
-                            3 -> sourceRight.articleUrls.size
+                            0 -> (sourceLeft?.articleUrls?.size ?: 0) + (sourceCenter?.articleUrls?.size ?: 0) + (sourceRight?.articleUrls?.size ?: 0)
+                            1 -> sourceLeft?.articleUrls?.size ?: 0
+                            2 -> sourceCenter?.articleUrls?.size ?: 0
+                            3 -> sourceRight?.articleUrls?.size ?: 0
                             else -> 0
                         }
                         Badge(
@@ -505,29 +559,35 @@ private fun OriginalSource(
                     }
                 }
                 1 -> {
-                    sourceLeft.articleUrls.forEach { url ->
-                        item {
-                            SourceCard(
-                                onClick = {}
-                            )
+                    sourceLeft?.let {
+                        it.articleUrls.forEach { url ->
+                            item {
+                                SourceCard(
+                                    onClick = {}
+                                )
+                            }
                         }
                     }
                 }
                 2 -> {
-                    sourceCenter.articleUrls.forEach { url ->
-                        item {
-                            SourceCard(
-                                onClick = {}
-                            )
+                    sourceCenter?.let {
+                        it.articleUrls.forEach { url ->
+                            item {
+                                SourceCard(
+                                    onClick = {}
+                                )
+                            }
                         }
                     }
                 }
                 3 -> {
-                    sourceRight.articleUrls.forEach { url ->
-                        item {
-                            SourceCard(
-                                onClick = {}
-                            )
+                    sourceRight?.let {
+                        it.articleUrls.forEach { url ->
+                            item {
+                                SourceCard(
+                                    onClick = {}
+                                )
+                            }
                         }
                     }
                 }
