@@ -45,7 +45,7 @@ fun SettingScreen(
                     onClick = {navigateUp()},
                 ) {
                     Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.setting),
+                        imageVector = ImageVector.vectorResource(R.drawable.chevron_left),
                         contentDescription = "settings",
                         tint = NewsTheme.colors.iconDefault
                     )
