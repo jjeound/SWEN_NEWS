@@ -1,6 +1,6 @@
 package com.example.news.data.dto
 
-data class HotNews(
-    val clusters: List<ClusterX>,
+data class HotNewsResponse(
+    val clusters: List<Cluster>,
     val pagination: Pagination
 )

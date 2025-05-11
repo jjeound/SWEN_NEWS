@@ -1,9 +1,16 @@
 package com.example.news.data.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class Left(
-    val article_ids: List<String>,
-    val article_urls: List<String>,
+    @SerializedName("article_ids")
+    val articleIds: List<String>,
+    @SerializedName("article_urls")
+    val articleUrls: List<String>,
+    @SerializedName("keywords")
     val keywords: List<Keyword>,
-    val press_list: List<String>,
+    @SerializedName("press_list")
+    val pressList: List<String>,
+    @SerializedName("summary")
     val summary: String
 )
