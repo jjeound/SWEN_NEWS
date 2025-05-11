@@ -15,7 +15,9 @@ import com.example.news.ui.theme.NewsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeTopBar() {
+fun HomeTopBar(
+    navigateToSetting: () -> Unit
+) {
     CenterAlignedTopAppBar(
         title = {
             Text(
@@ -29,7 +31,9 @@ fun HomeTopBar() {
         ),
         actions = {
             IconButton(
-                onClick = { },
+                onClick = {
+                    navigateToSetting()
+                },
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.setting),
