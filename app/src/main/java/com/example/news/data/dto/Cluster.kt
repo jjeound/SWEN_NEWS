@@ -11,13 +11,13 @@ data class Cluster(
     @SerializedName("bias_score")
     val biasScore: Double,
     @SerializedName("center")
-    val center: Center,
+    val center: Center?,
     @SerializedName("cluster_id")
     val clusterId: String,
     @SerializedName("created_at")
     val createdAt: String,
     @SerializedName("left")
-    val left: Left,
+    val left: Left?,
     @SerializedName("media_counts")
     val mediaCounts: MediaCounts,
     @SerializedName("model_ver")
@@ -25,7 +25,7 @@ data class Cluster(
     @SerializedName("pub_date")
     val pubDate: String,
     @SerializedName("right")
-    val right: Right,
+    val right: Right?,
     @SerializedName("title")
     val title: String,
     @SerializedName("updated_at")
