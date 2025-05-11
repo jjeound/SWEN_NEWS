@@ -31,7 +31,7 @@ import androidx.compose.runtime.getValue
 fun MoreScreen(
     viewModel: MoreViewModel = hiltViewModel(),
     isFirst: Boolean,
-    navigateToDetail: (Long) -> Unit,
+    navigateToDetail: (String) -> Unit,
     navigateUp: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -114,7 +114,7 @@ private fun NewsList(
     uiState: MoreUiState,
     newsList: List<News>,
     fetchNextNews: () -> Unit,
-    navigateToDetail: (Long) -> Unit
+    navigateToDetail: (String) -> Unit
 ){
     Box(modifier = Modifier.fillMaxSize()) {
         val threadHold = 0
