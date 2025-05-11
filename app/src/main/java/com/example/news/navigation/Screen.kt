@@ -8,7 +8,7 @@ sealed interface Screen{
     @Serializable
     data class More(val isFirst: Boolean): Screen
     @Serializable
-    data class Detail(val id: Long): Screen
+    data class Detail(val id: String): Screen
     @Serializable
     data object Setting: Screen
 }

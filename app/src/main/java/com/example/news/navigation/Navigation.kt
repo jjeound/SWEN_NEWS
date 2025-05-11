@@ -20,6 +20,12 @@ fun Navigation(navHostController: NavHostController){
             HomeScreen(
                 navigateToMore = { isFirst ->
                     navHostController.navigate(Screen.More(isFirst))
+                },
+                navigateToDetail = { newsId ->
+                    navHostController.navigate(Screen.Detail(newsId))
+                },
+                navigateToSetting = {
+                    navHostController.navigate(Screen.Setting)
                 }
             )
         }
