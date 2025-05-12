@@ -7,6 +7,8 @@ data class Right(
     val articleIds: List<String>,
     @SerializedName("article_urls")
     val articleUrls: List<String>,
+    @SerializedName("image_urls")
+    val imageUrls: List<String>?,
     @SerializedName("keywords")
     val keywords: List<Keyword>,
     @SerializedName("press_list")

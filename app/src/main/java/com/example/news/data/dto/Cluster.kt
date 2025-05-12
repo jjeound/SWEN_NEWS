@@ -29,16 +29,19 @@ data class Cluster(
     @SerializedName("title")
     val title: String,
     @SerializedName("updated_at")
-    val updatedAt: String
+    val updatedAt: String,
+    @SerializedName("representative_image")
+    val representativeImage: String,
 ){
-    fun toDomain(): News{
+    fun toDomain(totalPages: Int): News{
         return News(
-            id = clusterId,
+            id = id,
             title = title,
-            thumbnail = null,
+            thumbnail = representativeImage,
             left = (biasRatio.left * 100).toInt(),
             right = (biasRatio.right * 100).toInt(),
-            center = (biasRatio.center * 100).toInt()
+            center = (biasRatio.center * 100).toInt(),
+            totalPages = totalPages
         )
     }
 }

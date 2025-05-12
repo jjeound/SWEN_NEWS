@@ -6,5 +6,6 @@ data class News(
     val thumbnail: String? = null,
     val left: Int,
     val right: Int,
-    val center: Int
+    val center: Int,
+    val totalPages: Int,
 )

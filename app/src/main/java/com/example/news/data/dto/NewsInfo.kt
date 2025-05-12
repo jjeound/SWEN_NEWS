@@ -7,19 +7,27 @@ data class NewsInfo(
     val articleIds: List<String>,
     @SerializedName("article_urls")
     val articleUrls: List<String>,
+    @SerializedName("image_urls")
+    val imageUrls: List<String>,
+    @SerializedName("representative_image")
+    val representativeImage: String,
     @SerializedName("bias_ratio")
     val biasRatio: BiasRatio,
+    @SerializedName("center")
     val center: Center?,
     @SerializedName("created_at")
     val createdAt: String,
+    @SerializedName("left")
     val left: Left?,
     @SerializedName("media_counts")
     val mediaCounts: MediaCounts,
     @SerializedName("model_ver")
     val modelVer: String,
-    @SerializedName("press_list")
+    @SerializedName("pub_date")
     val pubDate: String,
+    @SerializedName("right")
     val right: Right?,
+    @SerializedName("title")
     val title: String,
     @SerializedName("updated_at")
     val updatedAt: String
