@@ -29,7 +29,7 @@ class HomeRepositoryImpl @Inject constructor(
         onStart()
         try {
             val response = newsClient.getHotNewsList(page = page)
-            emit(response.result!!.clusters.map { it.toDomain() })
+            emit(response.result!!.clusters.map { it.toDomain(response.result.pagination.pages) })
             Log.d("news", response.toString())
             onComplete()
         }catch (e: HttpException){
@@ -49,7 +49,7 @@ class HomeRepositoryImpl @Inject constructor(
         onStart()
         try {
             val response = newsClient.getLatestNewsList(page = page)
-            emit(response.result!!.clusters.map { it.toDomain() })
+            emit(response.result!!.clusters.map { it.toDomain(response.result.pagination.pages) })
             onComplete()
         }catch (e: HttpException){
             onError(e.toString())

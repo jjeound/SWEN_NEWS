@@ -11,13 +11,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import com.example.news.R
+import com.example.news.navigation.Screen
+import com.example.news.navigation.currentComposeNavigator
 import com.example.news.ui.theme.NewsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeTopBar(
-    navigateToSetting: () -> Unit
-) {
+fun HomeTopBar() {
+    val composeNavigator = currentComposeNavigator
     CenterAlignedTopAppBar(
         title = {
             Text(
@@ -32,7 +33,7 @@ fun HomeTopBar(
         actions = {
             IconButton(
                 onClick = {
-                    navigateToSetting()
+                    composeNavigator.navigate(Screen.Setting)
                 },
             ) {
                 Icon(

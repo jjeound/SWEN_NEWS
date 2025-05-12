@@ -22,8 +22,8 @@ class HomeViewModel @Inject constructor(
     internal val hotNewsUiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     internal val latestNewsUiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
 
-    private val hotNewsFetchingIndex: MutableStateFlow<Int> = MutableStateFlow(0)
-    private val latestNewsFetchingIndex: MutableStateFlow<Int> = MutableStateFlow(0)
+    val hotNewsFetchingIndex: MutableStateFlow<Int> = MutableStateFlow(1)
+    val latestNewsFetchingIndex: MutableStateFlow<Int> = MutableStateFlow(1)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val hotNewsList: StateFlow<List<News>> = hotNewsFetchingIndex.flatMapLatest { page ->
@@ -62,6 +62,30 @@ class HomeViewModel @Inject constructor(
     fun fetchNextLatestNewsList() {
         if (latestNewsUiState.value != HomeUiState.Loading) {
             latestNewsFetchingIndex.value++
+        }
+    }
+
+    fun fetchPrevHotNewsList() {
+        if (hotNewsUiState.value != HomeUiState.Loading) {
+            hotNewsFetchingIndex.value--
+        }
+    }
+
+    fun fetchPrevLatestNewsList() {
+        if (latestNewsUiState.value != HomeUiState.Loading) {
+            latestNewsFetchingIndex.value--
+        }
+    }
+
+    fun fetchThisHotNewsList(page: Int) {
+        if (hotNewsUiState.value != HomeUiState.Loading) {
+            hotNewsFetchingIndex.value = page
+        }
+    }
+
+    fun fetchThisLatestNewsList(page: Int) {
+        if (latestNewsUiState.value != HomeUiState.Loading) {
+            latestNewsFetchingIndex.value = page
         }
     }
 }
