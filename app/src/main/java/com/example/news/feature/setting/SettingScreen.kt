@@ -1,5 +1,7 @@
 package com.example.news.feature.setting
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,13 +21,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import com.example.news.R
 import com.example.news.core.Dimens
+import com.example.news.navigation.currentComposeNavigator
 import com.example.news.ui.theme.NewsTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun SettingScreen(
-    navigateUp: () -> Unit
-){
+fun SharedTransitionScope.SettingScreen(){
+    val composeNavigator = currentComposeNavigator
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -42,7 +44,7 @@ fun SettingScreen(
             ),
             navigationIcon = {
                 IconButton(
-                    onClick = {navigateUp()},
+                    onClick = {composeNavigator.navigateUp()},
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.chevron_left),
