@@ -11,25 +11,25 @@ class NewsClient @Inject constructor(
     suspend fun getHotNewsList(page: Int): ApiResponse<NewsResponse> =
         newsService.getHotNewsList(
             limit = PAGING_SIZE_SMALL,
-            page = page * PAGING_SIZE + 1,
+            page = page,
         )
 
     suspend fun getLatestNewsList(page: Int): ApiResponse<NewsResponse> =
         newsService.getLatestNewsList(
             limit = PAGING_SIZE_SMALL,
-            page = page * PAGING_SIZE + 1,
+            page = page,
         )
     suspend fun getCategoryHotNewsList(category: String, page: Int): ApiResponse<NewsResponse> =
         newsService.getCategoryHotNewsList(
             category = category,
             limit = PAGING_SIZE,
-            page = page * PAGING_SIZE + 1,
+            page = page,
         )
     suspend fun getCategoryLatestNewsList(category: String, page: Int): ApiResponse<NewsResponse> =
         newsService.getCategoryLatestNewsList(
             category = category,
             limit = PAGING_SIZE,
-            page = page * PAGING_SIZE + 1,
+            page = page,
         )
     suspend fun getNewsDetail(id: String): ApiResponse<NewsInfo> =
         newsService.getNewsDetail(id = id)
