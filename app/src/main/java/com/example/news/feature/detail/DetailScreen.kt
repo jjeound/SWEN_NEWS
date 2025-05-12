@@ -1,7 +1,8 @@
 package com.example.news.feature.detail
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -9,20 +10,24 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -39,12 +44,19 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.news.R
 import com.example.news.ui.theme.NewsTheme
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.news.core.Dimens
@@ -54,20 +66,22 @@ import com.example.news.data.dto.Keyword
 import com.example.news.data.dto.Left
 import com.example.news.data.dto.NewsInfo
 import com.example.news.data.dto.Right
+import com.example.news.navigation.currentComposeNavigator
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun DetailScreen(
+fun SharedTransitionScope.DetailScreen(
     viewModel: DetailViewModel = hiltViewModel(),
-    navigateUp: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val newsInfo by viewModel.newsDetail.collectAsStateWithLifecycle()
-
+    val composeNavigator = currentComposeNavigator
     Column(
         modifier = Modifier
         .fillMaxSize()
-        .verticalScroll(rememberScrollState())
     ) {
         TopAppBar(
             title = {},
@@ -77,7 +91,7 @@ fun DetailScreen(
             navigationIcon = {
                 IconButton(
                     onClick = {
-                        navigateUp()
+                        composeNavigator.navigateUp()
                     }
                 ) {
                     Icon(
@@ -108,11 +122,13 @@ fun DetailScreen(
 private fun DetailContent(
     newsInfo: NewsInfo,
 ) {
-    var selectedIndex = 0
+    var selectedIndex by remember { mutableIntStateOf(0) }
     Column(
         modifier = Modifier.fillMaxSize().padding(
             horizontal = Dimens.horizontalPadding,
             vertical = Dimens.verticalPadding
+        ).verticalScroll(
+            rememberScrollState()
         ),
         verticalArrangement = Arrangement.spacedBy(Dimens.gapMedium)
     ) {
@@ -121,17 +137,12 @@ private fun DetailContent(
             style = NewsTheme.typography.headlineLarge,
             color = NewsTheme.colors.textPrimary
         )
-//        AsyncImage(
-//            model = newsInfo.thumbnail,
-//            contentDescription = newsInfo.title,
-//            alignment = Alignment.Center,
-//            contentScale = ContentScale.Crop,
-//            modifier = Modifier.fillMaxWidth()
-//        )
-        Image(
-            imageVector = ImageVector.vectorResource(R.drawable.ic_launcher_foreground),
+        AsyncImage(
+            model = newsInfo.representativeImage,
             contentDescription = newsInfo.title,
-            modifier = Modifier.fillMaxWidth()
+            alignment = Alignment.Center,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier.fillMaxWidth().height(300.dp)
         )
         when(selectedIndex){
             0 -> {
@@ -149,7 +160,7 @@ private fun DetailContent(
                         keyword = newsInfo.left.keywords
                     )
                     MediaList(
-                        media = newsInfo.left.articleIds
+                        media = newsInfo.left.articleUrls
                     )
                 } else {
                     Summary(
@@ -177,7 +188,7 @@ private fun DetailContent(
                         keyword = newsInfo.center.keywords
                     )
                     MediaList(
-                        media = newsInfo.center.articleIds
+                        media = newsInfo.center.articleUrls
                     )
                 }else {
                     Summary(
@@ -205,7 +216,7 @@ private fun DetailContent(
                         keyword = newsInfo.right.keywords
                     )
                     MediaList(
-                        media = newsInfo.right.articleIds
+                        media = newsInfo.right.articleUrls
                     )
                 }else {
                     Summary(
@@ -220,13 +231,14 @@ private fun DetailContent(
             }
         }
         MediaOpList(
-            mediaOp = newsInfo.articleIds //수정
+            mediaOp = newsInfo.articleIds,//수정
+            updatedAt = newsInfo.updatedAt
         )
         OriginalSource(
             sourceAll = newsInfo.articleUrls,
-            sourceLeft = newsInfo.left,
-            sourceCenter = newsInfo.center,
-            sourceRight = newsInfo.right
+            sourceLeft = newsInfo.left?.articleUrls,
+            sourceCenter = newsInfo.center?.articleUrls,
+            sourceRight = newsInfo.right?.articleUrls
         )
     }
 }
@@ -266,10 +278,6 @@ private fun Summary(
                         Box(
                             modifier = Modifier
                                 .width(50.dp).height(90.dp)
-                                .padding(
-                                    horizontal = Dimens.horizontalPadding,
-                                    vertical = Dimens.gapSmall
-                                )
                                 .clickable { onClick(index) }
                                 .background(
                                     brush = Brush.verticalGradient(
@@ -280,17 +288,21 @@ private fun Summary(
                             contentAlignment = Alignment.Center
                         ) {
                             Column(
+                                modifier = Modifier.fillMaxHeight().padding(
+                                    vertical = Dimens.gapSmall
+                                ),
+                                horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
                                     text = option,
                                     style = NewsTheme.typography.button,
-                                    color = NewsTheme.colors.buttonTextUnfocused
+                                    color = NewsTheme.colors.badgeText
                                 )
                                 Text(
                                     text = "${ratio[index]*100}%",
                                     style = NewsTheme.typography.button,
-                                    color = NewsTheme.colors.buttonTextUnfocused
+                                    color = NewsTheme.colors.textPrimary
                                 )
                             }
                         }
@@ -298,15 +310,15 @@ private fun Summary(
                         Box(
                             modifier = Modifier
                                 .width(50.dp)
-                                .padding(
-                                    horizontal = Dimens.horizontalPadding,
-                                    vertical = Dimens.gapSmall
-                                )
+                                .wrapContentHeight()
                                 .clickable { onClick(index) }
                                 .background(NewsTheme.colors.buttonUnfocused),
-                            contentAlignment = Alignment.Center
+                            contentAlignment = Alignment.TopCenter
                         ) {
                             Text(
+                                modifier = Modifier.padding(
+                                    vertical = Dimens.gapSmall
+                                ),
                                 text = option,
                                 style = NewsTheme.typography.button,
                                 color = NewsTheme.colors.buttonTextUnfocused
@@ -349,7 +361,7 @@ private fun Summary(
 
 @Composable
 private fun KeywordAnalysis(
-    keyword: List<Keyword>,
+    keyword: List<Keyword>?,
 ){
     Column(
         modifier = Modifier.fillMaxWidth().padding(Dimens.gapMedium),
@@ -360,26 +372,38 @@ private fun KeywordAnalysis(
             style = NewsTheme.typography.header,
             color = NewsTheme.colors.textPrimary
         )
-        keyword.forEach { keyword ->
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(Dimens.gapMedium),
-                horizontalArrangement = Arrangement.spacedBy(Dimens.gapMedium)
-            ) {
-                Card(
-                    modifier = Modifier
-                        .size((keyword.score*100).toInt().dp)
-                        .clip(RoundedCornerShape(Dimens.cornerRadius)),
-                    shape = RoundedCornerShape(Dimens.cornerRadius),
-                    border = BorderStroke(
-                        width = Dimens.border,
-                        color = NewsTheme.colors.optionBorderFocused
-                    ),
-                ) {
-                    Text(
-                        text = keyword.word,
-                        style = NewsTheme.typography.keywordMedium,
-                        color = NewsTheme.colors.textPrimary
-                    )
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(Dimens.gapMedium).horizontalScroll(
+                rememberScrollState()
+            ),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.gapMedium),
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            keyword?.let {
+                it.forEach { keyword ->
+                    Card(
+                        modifier = Modifier
+                            .size((keyword.score*100).toInt().dp),
+                        shape = CircleShape,
+                        colors = CardDefaults.cardColors(
+                            containerColor = NewsTheme.colors.surface
+                        ),
+                        border = BorderStroke(
+                            width = Dimens.border,
+                            color = NewsTheme.colors.optionBorderFocused
+                        ),
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ){
+                            Text(
+                                text = keyword.word,
+                                style = NewsTheme.typography.keywordMedium,
+                                color = NewsTheme.colors.textPrimary,
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -427,7 +451,12 @@ private fun MediaList(
 @Composable
 private fun MediaOpList(
     mediaOp: List<String>,
+    updatedAt: String
 ){
+    val instant = Instant.parse(updatedAt)
+    val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")
+        .withZone(ZoneId.systemDefault())
+    val time = formatter.format(instant)
     Column(
         modifier = Modifier.fillMaxWidth().padding(Dimens.gapMedium),
         verticalArrangement = Arrangement.spacedBy(Dimens.gapLarge)
@@ -442,7 +471,7 @@ private fun MediaOpList(
                 color = NewsTheme.colors.textPrimary
             )
             Text(
-                text = "2025.04.30 13:29분 기준",
+                text = "${time}분 기준",
                 style = NewsTheme.typography.time,
                 color = NewsTheme.colors.textThird
             )
@@ -450,7 +479,7 @@ private fun MediaOpList(
         Row(
             modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(Dimens.gapMedium)
                 .clip(shape = RoundedCornerShape(Dimens.cornerRadius)).background(
-                    color = NewsTheme.colors.blueBackground
+                    color = NewsTheme.colors.surface
                 ).shadow(
                     elevation = Dimens.shadow,
                 ),
@@ -477,12 +506,18 @@ private fun MediaOpList(
 @Composable
 private fun OriginalSource(
     sourceAll: List<String>,
-    sourceLeft: Left?,
-    sourceCenter: Center?,
-    sourceRight: Right?,
+    sourceLeft: List<String>?,
+    sourceCenter: List<String>?,
+    sourceRight: List<String>?,
 ){
-    var selectedIndex = 0
+    var selectedIndex by remember { mutableIntStateOf(0) }
     val options = listOf("전체", "좌", "중도", "우")
+    val counts = listOf(
+        sourceAll.size,
+        sourceLeft?.size ?: 0,
+        sourceCenter?.size ?: 0,
+        sourceRight?.size ?: 0
+    )
     Column(
         modifier = Modifier.fillMaxWidth().padding(Dimens.gapMedium),
         verticalArrangement = Arrangement.spacedBy(Dimens.gapLarge)
@@ -494,46 +529,55 @@ private fun OriginalSource(
         )
         Column(
             modifier = Modifier.fillMaxWidth()
-        ){
-            Column(
-                modifier = Modifier.wrapContentSize()
-            ) {
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                var rowWidth by remember { mutableStateOf(0) }
                 options.forEachIndexed { index, option ->
-                    Row(
+                    Column(
                         modifier = Modifier.wrapContentWidth().clickable{
-                            selectedIndex = index
-                        },
-                        horizontalArrangement = Arrangement.spacedBy(Dimens.gapSmall)
-                    ) {
-                        Text(
-                            text = option,
-                            style = NewsTheme.typography.body,
-                            color = NewsTheme.colors.textPrimary
-                        )
-                        val counts = when(selectedIndex){
-                            0 -> (sourceLeft?.articleUrls?.size ?: 0) + (sourceCenter?.articleUrls?.size ?: 0) + (sourceRight?.articleUrls?.size ?: 0)
-                            1 -> sourceLeft?.articleUrls?.size ?: 0
-                            2 -> sourceCenter?.articleUrls?.size ?: 0
-                            3 -> sourceRight?.articleUrls?.size ?: 0
-                            else -> 0
-                        }
-                        Badge(
-                            modifier = Modifier.wrapContentSize(),
-                            containerColor = NewsTheme.colors.badge,
-                            content = {
-                                Text(
-                                    text = counts.toString(),
-                                    style = NewsTheme.typography.badge,
-                                    color = NewsTheme.colors.badgeText
-                                )
+                            if(counts[index] > 0){
+                                selectedIndex = index
                             }
-                        )
-                    }
-                    if(selectedIndex == index){
-                        HorizontalDivider(
-                            modifier = Modifier.wrapContentWidth(),
-                            color = NewsTheme.colors.optionBorderFocused
-                        )
+                        }
+                    ) {
+                        Row(
+                            modifier = Modifier.wrapContentWidth().padding(
+                                Dimens.gapMedium
+                            ).onGloballyPositioned { coordinates ->
+                                if (selectedIndex == index) {
+                                    rowWidth = coordinates.size.width
+                                }
+                            },
+                            horizontalArrangement = Arrangement.spacedBy(Dimens.gapSmall),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = option,
+                                style = NewsTheme.typography.body,
+                                color = NewsTheme.colors.textPrimary
+                            )
+                            Badge(
+                                modifier = Modifier.wrapContentSize(),
+                                containerColor = NewsTheme.colors.badge,
+                                content = {
+                                    Text(
+                                        text = counts[index].toString(),
+                                        style = NewsTheme.typography.badge,
+                                        color = NewsTheme.colors.badgeText
+                                    )
+                                }
+                            )
+                        }
+                        if(selectedIndex == index){
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .width(with(LocalDensity.current) { rowWidth.toDp() + Dimens.gapMedium }),
+                                color = NewsTheme.colors.optionBorderFocused
+                            )
+                        }
                     }
                 }
             }
@@ -542,52 +586,44 @@ private fun OriginalSource(
                 color = NewsTheme.colors.optionBorderUnfocused
             )
         }
-        LazyColumn(
+        Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(Dimens.gapLarge),
         ) {
             when(selectedIndex){
                 0 -> {
                     sourceAll.forEach { url ->
-                        item {
-                            SourceCard(
-                                onClick = {
+                        SourceCard(
+                            onClick = {
 
-                                }
-                            )
-                        }
+                            }
+                        )
                     }
                 }
                 1 -> {
                     sourceLeft?.let {
-                        it.articleUrls.forEach { url ->
-                            item {
-                                SourceCard(
-                                    onClick = {}
-                                )
-                            }
+                        it.forEach { url ->
+                            SourceCard(
+                                onClick = {}
+                            )
                         }
                     }
                 }
                 2 -> {
                     sourceCenter?.let {
-                        it.articleUrls.forEach { url ->
-                            item {
-                                SourceCard(
-                                    onClick = {}
-                                )
-                            }
+                        it.forEach { url ->
+                            SourceCard(
+                                onClick = {}
+                            )
                         }
                     }
                 }
                 3 -> {
                     sourceRight?.let {
-                        it.articleUrls.forEach { url ->
-                            item {
-                                SourceCard(
-                                    onClick = {}
-                                )
-                            }
+                        it.forEach { url ->
+                            SourceCard(
+                                onClick = {}
+                            )
                         }
                     }
                 }

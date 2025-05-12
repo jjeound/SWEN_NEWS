@@ -25,12 +25,12 @@ class DetailViewModel @Inject constructor(
     internal val uiState: MutableStateFlow<DetailsUiState> =
         MutableStateFlow(DetailsUiState.Loading)
 
-    val news = savedStateHandle.getStateFlow<News?>("news", null)
+    val id = savedStateHandle.getStateFlow<String?>("id", null)
     @OptIn(ExperimentalCoroutinesApi::class)
     val newsDetail: StateFlow<NewsInfo?> =
-        news.filterNotNull().flatMapLatest { news ->
+        id.filterNotNull().flatMapLatest { id ->
             repository.fetchNewsDetail(
-                id = news.id,
+                id = id,
                 onComplete = { uiState.tryEmit(DetailsUiState.Idle) },
                 onError = { uiState.tryEmit(DetailsUiState.Error(it)) },
             )
@@ -39,6 +39,7 @@ class DetailViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = null,
         )
+
 }
 
 @Stable

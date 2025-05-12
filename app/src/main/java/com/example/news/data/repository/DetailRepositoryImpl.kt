@@ -1,5 +1,6 @@
 package com.example.news.data.repository
 
+import android.util.Log
 import androidx.annotation.WorkerThread
 import com.example.news.data.Dispatcher
 import com.example.news.data.NewsAppDispatchers
@@ -25,9 +26,16 @@ class DetailRepositoryImpl @Inject constructor(
         onError: (String?) -> Unit
     ): Flow<NewsInfo?> = flow {
         try {
+            Log.d("fetch", "fetched: $id")
             val response = newsClient.getNewsDetail(id = id)
-            emit(response.result)
-            onComplete()
+            if (response.isSuccess){
+                emit(response.result)
+                Log.d("newsInfo", response.toString())
+                onComplete()
+            }else{
+                Log.d("error info", response.code)
+                onError(response.message)
+            }
         }catch (e: HttpException){
             onError(e.message)
         }catch (e: IOException){
