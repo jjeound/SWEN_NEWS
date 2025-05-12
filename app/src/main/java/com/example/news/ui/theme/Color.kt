@@ -78,7 +78,7 @@ public data class Colors(
             optionBorderFocused = colorResource(id = R.color.black_700),
             optionTextFocused = colorResource(id = R.color.black_700),
             buttonTextUnfocused = colorResource(id = R.color.black_100),
-            iconSelected = colorResource(id = R.color.white_700),
+            iconSelected = colorResource(id = R.color.black_700),
             iconDefault = colorResource(id = R.color.white_200),
             blueBias = colorResource(id = R.color.blue_700),
             redBias = colorResource(id = R.color.red_700),
