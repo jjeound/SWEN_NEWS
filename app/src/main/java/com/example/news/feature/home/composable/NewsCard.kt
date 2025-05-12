@@ -3,7 +3,6 @@ package com.example.news.feature.home.composable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,18 +23,21 @@ import coil.compose.AsyncImage
 import com.example.news.R
 import com.example.news.core.Dimens
 import com.example.news.data.model.News
+import com.example.news.navigation.Screen
+import com.example.news.navigation.currentComposeNavigator
 import com.example.news.ui.theme.NewsTheme
 
 @Composable
 fun NewsCard(
-    news: News,
-    navigateToDetail: (String) -> Unit,
+    news: News
 ){
+    val composeNavigator = currentComposeNavigator
     Row(
         modifier = Modifier.fillMaxWidth().padding(
             vertical = Dimens.verticalPadding
         ).clickable{
-            navigateToDetail(news.id)
+            composeNavigator.navControllerFlow.value?.currentBackStackEntry?.savedStateHandle?.set("id", news.id)
+            composeNavigator.navigate(Screen.Detail(news.id))
         },
         horizontalArrangement = Arrangement.spacedBy(Dimens.gapMedium),
     ) {
@@ -66,7 +67,8 @@ fun NewsCard(
             Row(
                 modifier = Modifier.padding(
                     vertical = Dimens.gapSmall
-                )
+                ),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 HorizontalDivider(
                     modifier = Modifier.width(news.left.dp),
