@@ -29,6 +29,18 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            kotlinOptions {
+                freeCompilerArgs += listOf(
+                    "-Xno-param-assertions",
+                    "-Xno-call-assertions",
+                    "-Xno-receiver-assertions"
+                )
+            }
+        }
+    }
+    kotlin {
+        compilerOptions {
+            freeCompilerArgs.add("-Xcontext-receivers")
         }
     }
     compileOptions {
