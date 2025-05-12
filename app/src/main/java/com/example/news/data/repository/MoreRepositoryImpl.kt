@@ -26,7 +26,7 @@ class MoreRepositoryImpl @Inject constructor(
         onStart()
         try {
             val response = newsClient.getCategoryHotNewsList(category = category ,page = page)
-            emit(response.result!!.clusters.map { it.toDomain() })
+            emit(response.result!!.clusters.map { it.toDomain(0) })
             onComplete()
         }catch (e: HttpException){
             onError(e.toString())
@@ -45,7 +45,7 @@ class MoreRepositoryImpl @Inject constructor(
         onStart()
         try {
             val response = newsClient.getCategoryLatestNewsList(category = category ,page = page)
-            emit(response.result!!.clusters.map { it.toDomain() })
+            emit(response.result!!.clusters.map { it.toDomain(0) })
             onComplete()
         }catch (e: HttpException){
             onError(e.toString())

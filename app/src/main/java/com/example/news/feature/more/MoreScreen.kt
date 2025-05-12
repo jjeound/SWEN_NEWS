@@ -1,5 +1,7 @@
 package com.example.news.feature.more
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,22 +30,20 @@ import com.example.news.feature.home.composable.NewsCard
 import com.example.news.ui.theme.NewsTheme
 import androidx.compose.runtime.getValue
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun MoreScreen(
+fun SharedTransitionScope.MoreScreen(
     viewModel: MoreViewModel = hiltViewModel(),
-    isFirst: Boolean,
-    navigateToDetail: (String) -> Unit,
-    navigateUp: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val newsList by if(isFirst) viewModel.hotNewsList.collectAsStateWithLifecycle() else viewModel.latestNewsList.collectAsStateWithLifecycle()
+    val newsList by viewModel.newsList.collectAsStateWithLifecycle()
+    val bool by viewModel.bool.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier.fillMaxSize()
     ){
         MoreTopBar(
-            isFirst = isFirst,
-            navigateUp = navigateUp
+            isFirst = bool != false
         )
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
@@ -59,18 +59,13 @@ fun MoreScreen(
         ){
             CategoryTab(
                 onTabSelected = { category ->
-                    if(isFirst){
-                        viewModel.fetchSingleCategoryHotNews(category)
-                    }else{
-                        viewModel.fetchSingleCategoryLatestNews(category)
-                    }
+                    viewModel.fetchSingleCategoryNews(category)
                 }
             )
             NewsList(
                 uiState = uiState,
                 newsList = newsList,
                 fetchNextNews = viewModel::fetchNextNewsList,
-                navigateToDetail = navigateToDetail
             )
         }
     }
@@ -121,7 +116,6 @@ private fun NewsList(
     uiState: MoreUiState,
     newsList: List<News>,
     fetchNextNews: () -> Unit,
-    navigateToDetail: (String) -> Unit
 ){
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -137,8 +131,7 @@ private fun NewsList(
                     fetchNextNews()
                 }
                 NewsCard(
-                    news = news,
-                    navigateToDetail = navigateToDetail
+                    news = news
                 )
             }
         }

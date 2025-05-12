@@ -10,14 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import com.example.news.R
+import com.example.news.navigation.currentComposeNavigator
 import com.example.news.ui.theme.NewsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreTopBar(
-    isFirst: Boolean,
-    navigateUp: () -> Unit
+    isFirst: Boolean
 ) {
+    val composeNavigator = currentComposeNavigator
     CenterAlignedTopAppBar(
         title = {
             Text(
@@ -32,7 +33,7 @@ fun MoreTopBar(
         navigationIcon = {
             IconButton(
                 onClick = {
-                    navigateUp()
+                    composeNavigator.navigateUp()
                 }
             ){
                 Icon(
