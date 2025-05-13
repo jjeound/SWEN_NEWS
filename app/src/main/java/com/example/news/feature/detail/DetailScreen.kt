@@ -65,6 +65,7 @@ import com.example.news.data.dto.Center
 import com.example.news.data.dto.Keyword
 import com.example.news.data.dto.Left
 import com.example.news.data.dto.NewsInfo
+import com.example.news.data.dto.OriginalSource
 import com.example.news.data.dto.Right
 import com.example.news.navigation.currentComposeNavigator
 import java.time.Instant
@@ -160,7 +161,7 @@ private fun DetailContent(
                         keyword = newsInfo.left.keywords
                     )
                     MediaList(
-                        media = newsInfo.left.articleUrls
+                        media = newsInfo.left.originalSource
                     )
                 } else {
                     Summary(
@@ -188,7 +189,7 @@ private fun DetailContent(
                         keyword = newsInfo.center.keywords
                     )
                     MediaList(
-                        media = newsInfo.center.articleUrls
+                        media = newsInfo.center.originalSource
                     )
                 }else {
                     Summary(
@@ -216,7 +217,7 @@ private fun DetailContent(
                         keyword = newsInfo.right.keywords
                     )
                     MediaList(
-                        media = newsInfo.right.articleUrls
+                        media = newsInfo.right.originalSource
                     )
                 }else {
                     Summary(
@@ -235,10 +236,10 @@ private fun DetailContent(
             updatedAt = newsInfo.updatedAt
         )
         OriginalSource(
-            sourceAll = newsInfo.articleUrls,
-            sourceLeft = newsInfo.left?.articleUrls,
-            sourceCenter = newsInfo.center?.articleUrls,
-            sourceRight = newsInfo.right?.articleUrls
+            sourceAll = (newsInfo.left?.originalSource ?:emptyList()) + (newsInfo.center?.originalSource ?: emptyList()) + (newsInfo.right?.originalSource ?: emptyList()),
+            sourceLeft = newsInfo.left?.originalSource,
+            sourceCenter = newsInfo.center?.originalSource,
+            sourceRight = newsInfo.right?.originalSource
         )
     }
 }
@@ -412,7 +413,7 @@ private fun KeywordAnalysis(
 
 @Composable
 private fun MediaList(
-    media: List<String>,
+    media: List<OriginalSource>,
 ){
     Column(
         modifier = Modifier.fillMaxWidth().padding(Dimens.gapMedium),
@@ -432,7 +433,7 @@ private fun MediaList(
         ) {
             media.forEach {
                 AsyncImage(
-                    model = it,
+                    model = it.url,
                     contentDescription = "media",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -505,15 +506,15 @@ private fun MediaOpList(
 
 @Composable
 private fun OriginalSource(
-    sourceAll: List<String>,
-    sourceLeft: List<String>?,
-    sourceCenter: List<String>?,
-    sourceRight: List<String>?,
+    sourceAll: List<OriginalSource>?,
+    sourceLeft: List<OriginalSource>?,
+    sourceCenter: List<OriginalSource>?,
+    sourceRight: List<OriginalSource>?,
 ){
     var selectedIndex by remember { mutableIntStateOf(0) }
     val options = listOf("전체", "좌", "중도", "우")
     val counts = listOf(
-        sourceAll.size,
+        sourceAll?.size ?: 0,
         sourceLeft?.size ?: 0,
         sourceCenter?.size ?: 0,
         sourceRight?.size ?: 0
@@ -592,18 +593,22 @@ private fun OriginalSource(
         ) {
             when(selectedIndex){
                 0 -> {
-                    sourceAll.forEach { url ->
-                        SourceCard(
-                            onClick = {
-
-                            }
-                        )
+                    sourceAll?.let {
+                        it.forEach { source ->
+                            SourceCard(
+                                media = source.name,
+                                title = source.title,
+                                onClick = {}
+                            )
+                        }
                     }
                 }
                 1 -> {
                     sourceLeft?.let {
-                        it.forEach { url ->
+                        it.forEach { source ->
                             SourceCard(
+                                media = source.name,
+                                title = source.title,
                                 onClick = {}
                             )
                         }
@@ -611,8 +616,10 @@ private fun OriginalSource(
                 }
                 2 -> {
                     sourceCenter?.let {
-                        it.forEach { url ->
+                        it.forEach { source ->
                             SourceCard(
+                                media = source.name,
+                                title = source.title,
                                 onClick = {}
                             )
                         }
@@ -620,8 +627,10 @@ private fun OriginalSource(
                 }
                 3 -> {
                     sourceRight?.let {
-                        it.forEach { url ->
+                        it.forEach { source ->
                             SourceCard(
+                                media = source.name,
+                                title = source.title,
                                 onClick = {}
                             )
                         }
@@ -634,11 +643,16 @@ private fun OriginalSource(
 
 @Composable
 private fun SourceCard(
+    media: String,
+    title: String,
     onClick: () -> Unit
 ){
     Card(
         modifier = Modifier
             .fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = NewsTheme.colors.surface
+        ),
         shape = RoundedCornerShape(Dimens.cornerRadius),
         border = BorderStroke(
             width = Dimens.border,
@@ -654,7 +668,7 @@ private fun SourceCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "언론사 이름",
+                    text = media,
                     style = NewsTheme.typography.media,
                     color = NewsTheme.colors.textPrimary
                 )
@@ -669,7 +683,7 @@ private fun SourceCard(
                 color = NewsTheme.colors.divider
             )
             Text(
-                text = "뉴스 제목",
+                text = title,
                 style = NewsTheme.typography.description,
                 color = NewsTheme.colors.textPrimary
             )
