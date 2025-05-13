@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -29,6 +30,9 @@ import com.example.news.data.model.News
 import com.example.news.feature.home.composable.NewsCard
 import com.example.news.ui.theme.NewsTheme
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -75,7 +79,7 @@ fun SharedTransitionScope.MoreScreen(
 fun CategoryTab(
     onTabSelected: (String) -> Unit
 ){
-    var selectedIndex = 0
+    var selectedIndex by remember { mutableIntStateOf(-1) }
 
     Row(
         modifier = Modifier.fillMaxWidth().padding(Dimens.verticalPadding),
@@ -89,6 +93,9 @@ fun CategoryTab(
                         selectedIndex = index
                         onTabSelected(category.eng)
                     },
+                colors = CardDefaults.cardColors(
+                    containerColor = NewsTheme.colors.surface
+                ),
                 shape = RoundedCornerShape(Dimens.cornerRadius),
                 border = BorderStroke(
                     width = Dimens.border,
@@ -96,8 +103,10 @@ fun CategoryTab(
                 )
             ) {
                 Box(
-                    modifier = Modifier
-                        .padding(Dimens.verticalPadding),
+                    modifier = Modifier.padding(
+                        horizontal = Dimens.gapMedium,
+                        vertical = Dimens.gapSmall
+                    ),
                     contentAlignment = Alignment.Center
                 ){
                     Text(
@@ -153,10 +162,10 @@ enum class Category(
 ){
     POLITICS("정치", "politics"),
     ECONOMY("경제", "economy"),
-    SOCIETY("사회", "society"),
-    SPORTS("스포츠", "sports"),
-    ENTERTAINMENT("연예", "entertainment"),
-    LIFESTYLE("생활/문화", "lifestyle"),
-    IT_SCIENCE("IT과학", "it_science"),
-    WORLD("세계", "world"),
+//    SOCIETY("사회", "society"),
+//    SPORTS("스포츠", "sports"),
+//    ENTERTAINMENT("연예", "entertainment"),
+//    LIFESTYLE("생활/문화", "lifestyle"),
+//    IT_SCIENCE("IT과학", "it_science"),
+//    WORLD("세계", "world"),
 }
