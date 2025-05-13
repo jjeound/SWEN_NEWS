@@ -3,6 +3,7 @@ package com.example.news.feature.home
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.news.core.Resource
 import com.example.news.data.model.News
 import com.example.news.data.repository.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,6 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -29,10 +32,23 @@ class HomeViewModel @Inject constructor(
     val hotNewsList: StateFlow<List<News>> = hotNewsFetchingIndex.flatMapLatest { page ->
         repository.fetchHotNews(
             page = page,
-            onStart = { hotNewsUiState.tryEmit(HomeUiState.Loading) },
-            onComplete = { hotNewsUiState.tryEmit(HomeUiState.Idle) },
-            onError = { hotNewsUiState.tryEmit(HomeUiState.Error(it)) }
-        )
+            limit = PAGE_SIZE,
+        ).map { resource ->
+            when (resource) {
+                is Resource.Success -> {
+                    hotNewsUiState.tryEmit(HomeUiState.Idle)
+                    resource.data ?: emptyList()
+                }
+                is Resource.Error -> {
+                    hotNewsUiState.tryEmit(HomeUiState.Error(resource.message))
+                    emptyList()
+                }
+                is Resource.Loading -> {
+                    hotNewsUiState.tryEmit(HomeUiState.Loading)
+                    emptyList()
+                }
+            }
+        }
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -43,10 +59,23 @@ class HomeViewModel @Inject constructor(
     val latestNewsList: StateFlow<List<News>> = latestNewsFetchingIndex.flatMapLatest { page ->
         repository.fetchLatestNews(
             page = page,
-            onStart = { latestNewsUiState.tryEmit(HomeUiState.Loading) },
-            onComplete = { latestNewsUiState.tryEmit(HomeUiState.Idle) },
-            onError = { latestNewsUiState.tryEmit(HomeUiState.Error(it)) }
-        )
+            limit = PAGE_SIZE,
+        ).map { resource ->
+            when (resource) {
+                is Resource.Success -> {
+                    latestNewsUiState.tryEmit(HomeUiState.Idle)
+                    resource.data ?: emptyList()
+                }
+                is Resource.Error -> {
+                    latestNewsUiState.tryEmit(HomeUiState.Error(resource.message))
+                    emptyList()
+                }
+                is Resource.Loading -> {
+                    latestNewsUiState.tryEmit(HomeUiState.Loading)
+                    emptyList()
+                }
+            }
+        }
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -87,6 +116,9 @@ class HomeViewModel @Inject constructor(
         if (latestNewsUiState.value != HomeUiState.Loading) {
             latestNewsFetchingIndex.value = page
         }
+    }
+    companion object {
+        const val PAGE_SIZE = 5
     }
 }
 

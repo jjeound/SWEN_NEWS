@@ -2,6 +2,7 @@ package com.example.news.data.repository
 
 import android.util.Log
 import androidx.annotation.WorkerThread
+import com.example.news.core.Resource
 import com.example.news.data.Dispatcher
 import com.example.news.data.NewsAppDispatchers
 import com.example.news.data.model.News
@@ -22,39 +23,46 @@ class HomeRepositoryImpl @Inject constructor(
     @WorkerThread
     override suspend fun fetchHotNews(
         page: Int,
-        onStart: () -> Unit,
-        onComplete: () -> Unit,
-        onError: (String?) -> Unit
-    ): Flow<List<News>> = flow {
-        onStart()
+        limit: Int,
+    ): Flow<Resource<List<News>>> = flow {
+        emit(Resource.Loading())
         try {
-            val response = newsClient.getHotNewsList(page = page)
-            emit(response.result!!.clusters.map { it.toDomain(response.result.pagination.pages) })
-            Log.d("news", response.toString())
-            onComplete()
+            val response = newsClient.getHotNewsList(page = page, limit = limit)
+            if(response.isSuccess){
+                Log.d("news", response.toString())
+                emit(Resource.Success(
+                    response.result!!.clusters.map { it.toDomain(response.result.pagination.pages) })
+                )
+            } else {
+                emit(Resource.Error(response.code))
+            }
         }catch (e: HttpException){
-            onError(e.toString())
+            emit(Resource.Error(e.toString()))
         }catch (e: IOException){
-            onError(e.toString())
+            emit(Resource.Error(e.toString()))
         }
     }.flowOn(ioDispatcher)
 
     @WorkerThread
     override suspend fun fetchLatestNews(
         page: Int,
-        onStart: () -> Unit,
-        onComplete: () -> Unit,
-        onError: (String?) -> Unit
-    ): Flow<List<News>> = flow {
-        onStart()
+        limit: Int,
+    ): Flow<Resource<List<News>>> = flow {
+        emit(Resource.Loading())
         try {
-            val response = newsClient.getLatestNewsList(page = page)
-            emit(response.result!!.clusters.map { it.toDomain(response.result.pagination.pages) })
-            onComplete()
+            val response = newsClient.getLatestNewsList(page = page, limit = limit)
+            if(response.isSuccess){
+                Log.d("news", response.toString())
+                emit(Resource.Success(
+                    response.result!!.clusters.map { it.toDomain(response.result.pagination.pages) })
+                )
+            } else {
+                emit(Resource.Error(response.code))
+            }
         }catch (e: HttpException){
-            onError(e.toString())
+            emit(Resource.Error(e.toString()))
         }catch (e: IOException){
-            onError(e.toString())
+            emit(Resource.Error(e.toString()))
         }
     }.flowOn(ioDispatcher)
 }
