@@ -5,8 +5,6 @@ import com.google.gson.annotations.SerializedName
 data class Center(
     @SerializedName("article_ids")
     val articleIds: List<String>,
-    @SerializedName("article_urls")
-    val articleUrls: List<String>,
     @SerializedName("image_urls")
     val imageUrls: List<String>?,
     @SerializedName("keywords")
@@ -14,5 +12,7 @@ data class Center(
     @SerializedName("press_list")
     val pressList: List<String>,
     @SerializedName("summary")
-    val summary: String
+    val summary: String,
+    @SerializedName("originalSource")
+    val originalSource: List<OriginalSource>,
 )

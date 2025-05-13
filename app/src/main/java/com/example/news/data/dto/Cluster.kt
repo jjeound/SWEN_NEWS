@@ -8,8 +8,6 @@ data class Cluster(
     val id: String,
     @SerializedName("bias_ratio")
     val biasRatio: BiasRatio,
-    @SerializedName("bias_score")
-    val biasScore: Double,
     @SerializedName("center")
     val center: Center?,
     @SerializedName("cluster_id")
