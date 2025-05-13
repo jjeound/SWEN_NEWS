@@ -8,15 +8,15 @@ import javax.inject.Inject
 class NewsClient @Inject constructor(
     private val newsService: NewsService
 ){
-    suspend fun getHotNewsList(page: Int): ApiResponse<NewsResponse> =
+    suspend fun getHotNewsList(page: Int, limit: Int): ApiResponse<NewsResponse> =
         newsService.getHotNewsList(
-            limit = PAGING_SIZE_SMALL,
+            limit = limit,
             page = page,
         )
 
-    suspend fun getLatestNewsList(page: Int): ApiResponse<NewsResponse> =
+    suspend fun getLatestNewsList(page: Int, limit: Int): ApiResponse<NewsResponse> =
         newsService.getLatestNewsList(
-            limit = PAGING_SIZE_SMALL,
+            limit = limit,
             page = page,
         )
     suspend fun getCategoryHotNewsList(category: String, page: Int): ApiResponse<NewsResponse> =
@@ -35,7 +35,6 @@ class NewsClient @Inject constructor(
         newsService.getNewsDetail(id = id)
 
     companion object {
-        private const val PAGING_SIZE_SMALL = 5
         private const val PAGING_SIZE = 10
     }
 }

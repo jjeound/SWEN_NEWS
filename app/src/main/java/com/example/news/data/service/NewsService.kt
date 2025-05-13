@@ -20,14 +20,14 @@ interface NewsService {
         @Query("page") page: Int = 1,
     ): ApiResponse<NewsResponse>
 
-    @GET("/clusters/hot/{category}")
+    @GET("/clusters/hot/category/{category}")
     suspend fun getCategoryHotNewsList(
         @Path("category") category: String,
         @Query("limit") limit: Int = 10,
         @Query("page") page: Int = 1,
     ): ApiResponse<NewsResponse>
 
-    @GET("/clusters/latest/{category}")
+    @GET("/clusters/latest/category/{category}")
     suspend fun getCategoryLatestNewsList(
         @Path("category") category: String,
         @Query("limit") limit: Int = 10,
