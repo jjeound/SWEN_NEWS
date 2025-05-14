@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -56,17 +55,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.news.core.Dimens
 import com.example.news.data.dto.BiasRatio
-import com.example.news.data.dto.Center
 import com.example.news.data.dto.Keyword
-import com.example.news.data.dto.Left
 import com.example.news.data.dto.NewsInfo
 import com.example.news.data.dto.OriginalSource
-import com.example.news.data.dto.Right
 import com.example.news.navigation.currentComposeNavigator
 import java.time.Instant
 import java.time.ZoneId
@@ -145,12 +140,14 @@ private fun DetailContent(
             contentScale = ContentScale.Fit,
             modifier = Modifier.fillMaxWidth().height(300.dp)
         )
+        val articleCounts = (newsInfo.left?.originalSource?.size ?: 0) +
+        (newsInfo.center?.originalSource?.size ?: 0) + (newsInfo.right?.originalSource?.size ?: 0)
         when(selectedIndex){
             0 -> {
                 if (newsInfo.left != null){
                     Summary(
                         summary = newsInfo.left.summary,
-                        counts = newsInfo.articleIds.size,
+                        counts = articleCounts,
                         biasRatio = newsInfo.biasRatio,
                         selectedIndex = selectedIndex,
                         onClick = {
@@ -165,7 +162,7 @@ private fun DetailContent(
                     )
                 } else {
                     Summary(
-                        counts = newsInfo.articleIds.size,
+                        counts = articleCounts,
                         biasRatio = newsInfo.biasRatio,
                         selectedIndex = selectedIndex,
                         onClick = {
@@ -178,7 +175,7 @@ private fun DetailContent(
                 if(newsInfo.center != null){
                     Summary(
                         summary = newsInfo.center.summary,
-                        counts = newsInfo.articleIds.size,
+                        counts = articleCounts,
                         biasRatio = newsInfo.biasRatio,
                         selectedIndex = selectedIndex,
                         onClick = {
@@ -193,7 +190,7 @@ private fun DetailContent(
                     )
                 }else {
                     Summary(
-                        counts = newsInfo.articleIds.size,
+                        counts = articleCounts,
                         biasRatio = newsInfo.biasRatio,
                         selectedIndex = selectedIndex,
                         onClick = {
@@ -206,7 +203,7 @@ private fun DetailContent(
                 if(newsInfo.right != null){
                     Summary(
                         summary = newsInfo.right.summary,
-                        counts = newsInfo.articleIds.size,
+                        counts = articleCounts,
                         biasRatio = newsInfo.biasRatio,
                         selectedIndex = selectedIndex,
                         onClick = {
@@ -221,7 +218,7 @@ private fun DetailContent(
                     )
                 }else {
                     Summary(
-                        counts = newsInfo.articleIds.size,
+                        counts = articleCounts,
                         biasRatio = newsInfo.biasRatio,
                         selectedIndex = selectedIndex,
                         onClick = {
@@ -232,7 +229,7 @@ private fun DetailContent(
             }
         }
         MediaOpList(
-            mediaOp = newsInfo.articleIds,//수정
+            mediaOp = emptyList<String>(),
             updatedAt = newsInfo.updatedAt
         )
         OriginalSource(
