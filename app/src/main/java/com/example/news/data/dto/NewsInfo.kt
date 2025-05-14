@@ -3,10 +3,6 @@ package com.example.news.data.dto
 import com.google.gson.annotations.SerializedName
 
 data class NewsInfo(
-    @SerializedName("article_ids")
-    val articleIds: List<String>,
-    @SerializedName("article_urls")
-    val articleUrls: List<String>,
     @SerializedName("image_urls")
     val imageUrls: List<String>,
     @SerializedName("representative_image")

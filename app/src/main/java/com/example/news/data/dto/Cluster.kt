@@ -8,30 +8,12 @@ data class Cluster(
     val id: String,
     @SerializedName("bias_ratio")
     val biasRatio: BiasRatio,
-    @SerializedName("center")
-    val center: Center?,
-    @SerializedName("cluster_id")
-    val clusterId: String,
-    @SerializedName("created_at")
-    val createdAt: String,
-    @SerializedName("left")
-    val left: Left?,
-    @SerializedName("media_counts")
-    val mediaCounts: MediaCounts,
-    @SerializedName("model_ver")
-    val modelVer: String,
-    @SerializedName("pub_date")
-    val pubDate: String,
-    @SerializedName("right")
-    val right: Right?,
     @SerializedName("title")
     val title: String,
-    @SerializedName("updated_at")
-    val updatedAt: String,
     @SerializedName("representative_image")
     val representativeImage: String,
 ){
-    fun toDomain(totalPages: Int): News{
+    fun toDomain(page: Int): News{
         return News(
             id = id,
             title = title,
@@ -39,7 +21,7 @@ data class Cluster(
             left = (biasRatio.left * 100).toInt(),
             right = (biasRatio.right * 100).toInt(),
             center = (biasRatio.center * 100).toInt(),
-            totalPages = totalPages
+            page = page
         )
     }
 }
