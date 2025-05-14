@@ -132,7 +132,6 @@ private fun HomeContent(
                 if(hotNewsList.isNotEmpty()){
                     NewsListFooter(
                         index = hotNewsIndex,
-                        totalPages = hotNewsList[0].totalPages,
                         fetchPrev = fetchPrevHotNews,
                         fetchNext = fetchNextHotNews,
                         fetchThis = fetchThisHotNews,
@@ -171,7 +170,6 @@ private fun HomeContent(
                 if(latestNewsList.isNotEmpty()){
                     NewsListFooter(
                         index = latestNewsIndex,
-                        totalPages = latestNewsList[0].totalPages,
                         fetchPrev = fetchPrevLatestNews,
                         fetchNext = fetchNextLatestNews,
                         fetchThis = fetchThisLatestNews,
@@ -221,7 +219,6 @@ private fun SectionHeader(
 @Composable
 private fun NewsListFooter(
     index: Int,
-    totalPages: Int,
     fetchPrev: () -> Unit,
     fetchNext: () -> Unit,
     fetchThis: (Int) -> Unit,
@@ -279,26 +276,22 @@ private fun NewsListFooter(
                     color = NewsTheme.colors.optionBorderFocused
                 )
             }
-            if (index + 1 <= totalPages) {
-                Column {
-                    Text(
-                        modifier = Modifier
-                            .padding(
-                                horizontal = Dimens.gapSmall
-                            )
-                            .clickable {
-                                fetchThis(index + 1)
-                            },
-                        text = "${index + 1}",
-                        style = NewsTheme.typography.option,
-                        color = NewsTheme.colors.optionTextUnfocused
-                    )
-                }
-
+            Column {
+                Text(
+                    modifier = Modifier
+                        .padding(
+                            horizontal = Dimens.gapSmall
+                        )
+                        .clickable {
+                            fetchThis(index + 1)
+                        },
+                    text = "${index + 1}",
+                    style = NewsTheme.typography.option,
+                    color = NewsTheme.colors.optionTextUnfocused
+                )
             }
             IconButton(
                 onClick = fetchNext,
-                enabled = index < totalPages,
                 colors = IconButtonDefaults.iconButtonColors(
                     disabledContentColor = NewsTheme.colors.iconDefault,
                     contentColor = NewsTheme.colors.iconSelected
