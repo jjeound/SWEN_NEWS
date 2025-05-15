@@ -4,9 +4,12 @@ import androidx.annotation.WorkerThread
 import com.example.news.core.Resource
 import com.example.news.data.Dispatcher
 import com.example.news.data.NewsAppDispatchers
-import com.example.news.data.database.dao.NewsDao
-import com.example.news.data.database.entity.mapper.asDomain
-import com.example.news.data.database.entity.mapper.asEntity
+import com.example.news.data.database.entity.mapper.asHotDomain
+import com.example.news.data.database.entity.mapper.asHotEntity
+import com.example.news.data.database.entity.mapper.asLatestDomain
+import com.example.news.data.database.entity.mapper.asLatestEntity
+import com.example.news.data.database.remote.HotNewsDao
+import com.example.news.data.database.remote.LatestNewsDao
 import com.example.news.data.model.News
 import com.example.news.data.service.NewsClient
 import kotlinx.coroutines.CoroutineDispatcher
@@ -19,7 +22,8 @@ import javax.inject.Inject
 
 class HomeRepositoryImpl @Inject constructor(
     private val newsClient: NewsClient,
-    private val dao: NewsDao,
+    private val hotNewsDao: HotNewsDao,
+    private val latestNewsDao: LatestNewsDao,
     @Dispatcher(NewsAppDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): HomeRepository{
 
@@ -29,13 +33,13 @@ class HomeRepositoryImpl @Inject constructor(
         limit: Int,
     ): Flow<Resource<List<News>>> = flow {
         emit(Resource.Loading())
-        val news = dao.getNewsList(page, true).asDomain()
+        val news = hotNewsDao.getNewsList(page).map { it.asHotDomain() }
         if (news.isEmpty()) {
             try {
                 val response = newsClient.getHotNewsList(page = page, limit = limit)
                 if(response.isSuccess){
-                    dao.insertNewsList(response.result!!.clusters.map { it.toDomain(page) }.asEntity(true))
-                    emit(Resource.Success(dao.getNewsList(page, true).asDomain()))
+                    hotNewsDao.insertNewsList(response.result!!.clusters.map { it.toDomain(page) }.map {it.asHotEntity()  })
+                    emit(Resource.Success(hotNewsDao.getNewsList(page).map { it.asHotDomain() }))
                 } else {
                     emit(Resource.Error(response.code))
                 }
@@ -45,7 +49,7 @@ class HomeRepositoryImpl @Inject constructor(
                 emit(Resource.Error(e.toString()))
             }
         }else{
-            emit(Resource.Success(dao.getNewsList(page, true).asDomain()))
+            emit(Resource.Success(hotNewsDao.getNewsList(page).map { it.asHotDomain() }))
         }
     }.flowOn(ioDispatcher)
 
@@ -55,13 +59,13 @@ class HomeRepositoryImpl @Inject constructor(
         limit: Int,
     ): Flow<Resource<List<News>>> = flow {
         emit(Resource.Loading())
-        val news = dao.getNewsList(page, false).asDomain()
+        val news = latestNewsDao.getNewsList(page).map { it.asLatestDomain() }
         if (news.isEmpty()) {
             try {
-                val response = newsClient.getLatestNewsList(page = page, limit = limit)
+                val response = newsClient.getHotNewsList(page = page, limit = limit)
                 if(response.isSuccess){
-                    dao.insertNewsList(response.result!!.clusters.map { it.toDomain(page) }.asEntity(false))
-                    emit(Resource.Success(dao.getNewsList(page, false).asDomain()))
+                    latestNewsDao.insertNewsList(response.result!!.clusters.map { it.toDomain(page) }.map {it.asLatestEntity()  })
+                    emit(Resource.Success(latestNewsDao.getNewsList(page).map { it.asLatestDomain() }))
                 } else {
                     emit(Resource.Error(response.code))
                 }
@@ -71,7 +75,7 @@ class HomeRepositoryImpl @Inject constructor(
                 emit(Resource.Error(e.toString()))
             }
         }else{
-            emit(Resource.Success(dao.getNewsList(page, false).asDomain()))
+            emit(Resource.Success(latestNewsDao.getNewsList(page).map { it.asLatestDomain() }))
         }
     }.flowOn(ioDispatcher)
 }
