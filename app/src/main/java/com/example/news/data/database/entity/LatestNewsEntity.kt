@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class NewsEntity(
+data class LatestNewsEntity(
     @PrimaryKey val id: String,
     val title: String,
     val thumbnail: String? = null,
@@ -12,5 +12,5 @@ data class NewsEntity(
     val right: Int,
     val center: Int,
     val page: Int,
-    val category: Boolean
+    val category: String?
 )
