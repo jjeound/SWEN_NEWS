@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -33,21 +33,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SharedTransitionScope.MoreScreen(
     viewModel: MoreViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val newsList by viewModel.newsList.collectAsStateWithLifecycle()
+    val newsList = viewModel.newsList.collectAsLazyPagingItems()
     val bool by viewModel.bool.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier.fillMaxSize()
     ){
         MoreTopBar(
-            isFirst = bool != false
+            isFirst = bool == true
         )
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
@@ -67,9 +70,7 @@ fun SharedTransitionScope.MoreScreen(
                 }
             )
             NewsList(
-                uiState = uiState,
                 newsList = newsList,
-                fetchNextNews = viewModel::fetchNextNewsList,
             )
         }
     }
@@ -122,36 +123,36 @@ fun CategoryTab(
 
 @Composable
 private fun NewsList(
-    uiState: MoreUiState,
-    newsList: List<News>,
-    fetchNextNews: () -> Unit,
+    newsList: LazyPagingItems<News>,
 ){
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        val threadHold = 0
-        LazyColumn(
-            modifier = Modifier.padding(Dimens.verticalPadding),
-            verticalArrangement = Arrangement.spacedBy(Dimens.gapMedium),
-        ) {
-            itemsIndexed(items = newsList, key = { _, news -> news.id }) { index, news ->
-                if ((index + threadHold) >= newsList.size && uiState != MoreUiState.Loading) {
-                    fetchNextNews()
-                }
-                NewsCard(
-                    news = news
-                )
-            }
-        }
-
-        if (uiState == MoreUiState.Loading) {
+        if(newsList.loadState.refresh is LoadState.Loading){
             CircularProgressIndicator(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(Dimens.gapLarge),
-                strokeWidth = Dimens.border
+                modifier = Modifier.size(40.dp),
+                color = NewsTheme.colors.center,
             )
+        } else {
+            LazyColumn(
+                modifier = Modifier.padding(Dimens.verticalPadding),
+                verticalArrangement = Arrangement.spacedBy(Dimens.gapMedium),
+            ) {
+                items(newsList.itemCount) {
+                    val news = newsList[it]
+                    if(news != null){
+                        NewsCard(
+                            news = news
+                        )
+                    }
+                }
+                item {
+                    if(newsList.loadState.append is LoadState.Loading) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
         }
     }
 }
