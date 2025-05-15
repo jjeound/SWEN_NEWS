@@ -2,8 +2,10 @@ package com.example.news.di
 
 import android.app.Application
 import androidx.room.Room
-import com.example.news.data.database.dao.NewsDao
-import com.example.news.data.database.db.NewsDatabase
+import com.example.news.data.database.remote.LatestNewsDao
+import com.example.news.data.database.db.HotNewsDatabase
+import com.example.news.data.database.db.LatestNewsDatabase
+import com.example.news.data.database.remote.HotNewsDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,17 +19,33 @@ internal object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideAppDatabase(
+    fun provideHotNewsDatabase(
         application: Application,
-    ): NewsDatabase {
+    ): HotNewsDatabase {
         return Room
-            .databaseBuilder(application, NewsDatabase::class.java, "News.db")
+            .databaseBuilder(application, HotNewsDatabase::class.java, "HotNews.db")
             .build()
     }
 
     @Provides
     @Singleton
-    fun provideNewsDao(appDatabase: NewsDatabase): NewsDao {
-        return appDatabase.newsDao()
+    fun provideHotNewsDao(db: HotNewsDatabase): HotNewsDao {
+        return db.newsDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLatestNewsDatabase(
+        application: Application,
+    ): LatestNewsDatabase {
+        return Room
+            .databaseBuilder(application, LatestNewsDatabase::class.java, "LatestNews.db")
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLatestNewsDao(db: LatestNewsDatabase): LatestNewsDao {
+        return db.newsDao()
     }
 }
