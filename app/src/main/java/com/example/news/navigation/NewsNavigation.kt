@@ -4,6 +4,7 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.example.news.feature.detail.DetailScreen
 import com.example.news.feature.home.HomeScreen
 import com.example.news.feature.more.MoreScreen
@@ -17,7 +18,10 @@ fun NavGraphBuilder.newsNavigation() {
     }
 
     composable<Screen.More>{
-        MoreScreen()
+        val args = it.toRoute<Screen.More>()
+        MoreScreen(
+            isHot = args.isHot
+        )
     }
     composable<Screen.Detail>{
         DetailScreen()

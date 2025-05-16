@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal interface NavigationModule {
+interface NavigationModule {
 
     @Binds
     @Singleton

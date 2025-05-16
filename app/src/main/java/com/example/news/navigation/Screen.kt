@@ -6,7 +6,7 @@ sealed interface Screen{
     @Serializable
     data object Home: Screen
     @Serializable
-    data class More(val isFirst: Boolean): Screen
+    data class More(val isHot: Boolean): Screen
     @Serializable
     data class Detail(val id: String): Screen
     @Serializable
