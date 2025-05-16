@@ -62,19 +62,19 @@ fun NewsTheme(
     }
 }
 
-public object NewsTheme {
+object NewsTheme {
 
-    public val colors: Colors
+    val colors: Colors
         @Composable
         @ReadOnlyComposable
         get() = LocalColors.current
 
-    public val background: Background
+    val background: Background
         @Composable
         @ReadOnlyComposable
         get() = LocalBackgroundTheme.current
 
-    public val typography: CustomTypography
+    val typography: CustomTypography
         @Composable
         @ReadOnlyComposable
         get() = LocalCustomTypography.current

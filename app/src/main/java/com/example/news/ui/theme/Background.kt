@@ -11,13 +11,13 @@ import androidx.compose.ui.unit.dp
 import com.example.news.R
 
 @Immutable
-public data class Background(
+data class Background(
     val color: Color = Color.Unspecified,
     val tonalElevation: Dp = Dp.Unspecified,
 ) {
-    public companion object {
+    companion object {
         @Composable
-        public fun defaultBackground(darkTheme: Boolean): Background {
+        fun defaultBackground(darkTheme: Boolean): Background {
             return if (darkTheme) {
                 Background(
                     color = colorResource(id = R.color.black_700),
@@ -33,5 +33,5 @@ public data class Background(
     }
 }
 
-public val LocalBackgroundTheme: ProvidableCompositionLocal<Background> =
+val LocalBackgroundTheme: ProvidableCompositionLocal<Background> =
     staticCompositionLocalOf { Background() }

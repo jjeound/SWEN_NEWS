@@ -8,7 +8,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 @Immutable
-public data class CustomTypography(
+data class CustomTypography(
     val appBarTitle: TextStyle,
     val option: TextStyle,
     val headlineSmall: TextStyle,
@@ -30,9 +30,9 @@ public data class CustomTypography(
     val description: TextStyle,
     val menu: TextStyle,
 ){
-    public companion object {
+    companion object {
         @Composable
-        public fun defaultCustomTypography(fontFamily: FontFamily): CustomTypography = CustomTypography(
+        fun defaultCustomTypography(fontFamily: FontFamily): CustomTypography = CustomTypography(
             appBarTitle = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Bold, fontSize = 14.sp),
             option = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Medium, fontSize = 12.sp),
             headlineSmall = TextStyle(fontFamily = fontFamily, fontWeight = FontWeight.Bold, fontSize = 14.sp),

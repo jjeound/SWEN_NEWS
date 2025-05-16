@@ -7,7 +7,7 @@ import androidx.compose.ui.res.colorResource
 import com.example.news.R
 
 @Immutable
-public data class Colors(
+data class Colors(
     val surface: Color,
     val textPrimary: Color,
     val textSecondary: Color,
@@ -33,9 +33,9 @@ public data class Colors(
     val redBackground: Color,
 ) {
 
-    public companion object {
+    companion object {
         @Composable
-        public fun defaultDarkColors(): Colors = Colors(
+        fun defaultDarkColors(): Colors = Colors(
             surface = colorResource(id = R.color.black_700),
             textPrimary = colorResource(id = R.color.white_700),
             textSecondary = colorResource(id = R.color.white_300),
@@ -62,7 +62,7 @@ public data class Colors(
         )
 
         @Composable
-        public fun defaultLightColors(): Colors = Colors(
+        fun defaultLightColors(): Colors = Colors(
             surface = colorResource(id = R.color.white_700),
             textPrimary = colorResource(id = R.color.black_700),
             textSecondary = colorResource(id = R.color.black_300),
