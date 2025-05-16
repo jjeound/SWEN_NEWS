@@ -16,8 +16,11 @@ interface HotNewsDao {
     @Query("SELECT * FROM hotnewsentity WHERE page = :page_")
     suspend fun getNewsList(page_: Int): List<HotNewsEntity>
 
-    @Query("SELECT * FROM hotnewsentity")
-    fun getNewsListPaged(): PagingSource<Int, HotNewsEntity>
+    @Query("""
+    SELECT * FROM hotnewsentity 
+    WHERE (:category_ IS NULL OR category = :category_)
+""")
+    fun getNewsListPaged(category_: String?): PagingSource<Int, HotNewsEntity>
 
     @Query("DELETE FROM hotnewsentity")
     suspend fun clearAll()

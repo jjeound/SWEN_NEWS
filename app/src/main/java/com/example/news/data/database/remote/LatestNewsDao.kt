@@ -16,8 +16,11 @@ interface LatestNewsDao {
     @Query("SELECT * FROM latestnewsentity WHERE page = :page_")
     suspend fun getNewsList(page_: Int): List<LatestNewsEntity>
 
-    @Query("SELECT * FROM latestnewsentity")
-    fun getNewsListPaged(): PagingSource<Int, LatestNewsEntity>
+    @Query("""
+    SELECT * FROM latestnewsentity 
+    WHERE (:category_ IS NULL OR category = :category_)
+""")
+    fun getNewsListPaged(category_: String?): PagingSource<Int, LatestNewsEntity>
 
     @Query("DELETE FROM latestnewsentity")
     suspend fun clearAll()
