@@ -1,5 +1,6 @@
 package com.example.news.data.service
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -50,6 +51,7 @@ class LatestNewsRemoteMediator(
                     page = loadKey,
                 )
             }
+            Log.d("LatestNewsRemoteMediator", "Response: $response")
 
             db.withTransaction {
                 if(loadType == LoadType.REFRESH) {
