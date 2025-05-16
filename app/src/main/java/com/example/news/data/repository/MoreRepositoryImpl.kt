@@ -35,7 +35,7 @@ class MoreRepositoryImpl @Inject constructor(
             remoteMediator = HotNewsRemoteMediator(
                 newsClient, hotDb, category
             ),
-            pagingSourceFactory = { hotDb.newsDao().getNewsListPaged() }
+            pagingSourceFactory = { hotDb.newsDao().getNewsListPaged(category) }
         ).flow.flowOn(ioDispatcher)
     }
 
@@ -49,7 +49,7 @@ class MoreRepositoryImpl @Inject constructor(
             remoteMediator = LatestNewsRemoteMediator(
                 newsClient, latestDb, category
             ),
-            pagingSourceFactory = { latestDb.newsDao().getNewsListPaged() }
+            pagingSourceFactory = { latestDb.newsDao().getNewsListPaged(category) }
         ).flow.flowOn(ioDispatcher)
     }
 }

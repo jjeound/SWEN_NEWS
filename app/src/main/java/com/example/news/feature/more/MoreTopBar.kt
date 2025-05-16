@@ -16,13 +16,13 @@ import com.example.news.ui.theme.NewsTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreTopBar(
-    isFirst: Boolean
+    isHot: Boolean
 ) {
     val composeNavigator = currentComposeNavigator
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = if(isFirst)"핫 뉴스 \uD83D\uDE80" else "최신 뉴스 \uD83D\uDCF0",
+                text = if(isHot)"핫 뉴스 \uD83D\uDE80" else "최신 뉴스 \uD83D\uDCF0",
                 color = NewsTheme.colors.textPrimary,
                 style = NewsTheme.typography.appBarTitle
             )

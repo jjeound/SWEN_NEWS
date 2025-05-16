@@ -21,6 +21,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,15 +43,20 @@ import androidx.paging.compose.collectAsLazyPagingItems
 @Composable
 fun SharedTransitionScope.MoreScreen(
     viewModel: MoreViewModel = hiltViewModel(),
+    isHot: Boolean,
 ) {
+    LaunchedEffect(true) {
+        viewModel.fetchNewsList(
+            isHot = isHot
+        )
+    }
     val newsList = viewModel.newsList.collectAsLazyPagingItems()
-    val bool by viewModel.bool.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier.fillMaxSize()
     ){
         MoreTopBar(
-            isFirst = bool == true
+            isHot = isHot
         )
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
@@ -66,7 +72,10 @@ fun SharedTransitionScope.MoreScreen(
         ){
             CategoryTab(
                 onTabSelected = { category ->
-                    viewModel.fetchSingleCategoryNews(category)
+                    viewModel.fetchNewsList(
+                        isHot = isHot,
+                        category = category
+                    )
                 }
             )
             NewsList(
@@ -149,7 +158,15 @@ private fun NewsList(
                 }
                 item {
                     if(newsList.loadState.append is LoadState.Loading) {
-                        CircularProgressIndicator()
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ){
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(40.dp),
+                                color = NewsTheme.colors.center,
+                            )
+                        }
                     }
                 }
             }
