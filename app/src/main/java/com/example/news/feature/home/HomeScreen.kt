@@ -198,7 +198,6 @@ private fun SectionHeader(
         )
         Row(
             modifier = Modifier.clickable{
-                composeNavigator.navControllerFlow.value?.currentBackStackEntry?.savedStateHandle?.set("bool", bool)
                 composeNavigator.navigate(Screen.More(bool))
             },
         ) {
