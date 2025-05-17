@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -123,7 +122,7 @@ class HomeViewModel @Inject constructor(
 }
 
 @Stable
-internal sealed interface HomeUiState {
+internal interface HomeUiState {
 
     data object Idle : HomeUiState
 
