@@ -1,5 +1,7 @@
 package com.example.news.feature.detail
 
+import android.annotation.SuppressLint
+import android.webkit.WebView
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.BorderStroke
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,7 +58,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.example.news.core.Dimens
 import com.example.news.data.dto.BiasRatio
@@ -158,7 +164,7 @@ private fun DetailContent(
                         keyword = newsInfo.left.keywords
                     )
                     MediaList(
-                        media = newsInfo.left.originalSource
+                        media = newsInfo.left.imageUrls
                     )
                 } else {
                     Summary(
@@ -186,7 +192,7 @@ private fun DetailContent(
                         keyword = newsInfo.center.keywords
                     )
                     MediaList(
-                        media = newsInfo.center.originalSource
+                        media = newsInfo.center.imageUrls
                     )
                 }else {
                     Summary(
@@ -214,7 +220,7 @@ private fun DetailContent(
                         keyword = newsInfo.right.keywords
                     )
                     MediaList(
-                        media = newsInfo.right.originalSource
+                        media = newsInfo.right.imageUrls
                     )
                 }else {
                     Summary(
@@ -410,10 +416,10 @@ private fun KeywordAnalysis(
 
 @Composable
 private fun MediaList(
-    media: List<OriginalSource>,
+    media: List<String>,
 ){
     Column(
-        modifier = Modifier.fillMaxWidth().padding(Dimens.gapMedium),
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(Dimens.gapLarge)
     ) {
         Text(
@@ -422,25 +428,25 @@ private fun MediaList(
             color = NewsTheme.colors.textPrimary
         )
         Row(
-            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(Dimens.gapMedium)
+            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())
                 .clip(shape = RoundedCornerShape(Dimens.cornerRadius)).background(
                     color = NewsTheme.colors.blueBackground
-                ).shadow(elevation = Dimens.shadow),
+                ),
             horizontalArrangement = Arrangement.spacedBy(Dimens.gapMedium)
         ) {
             media.forEach {
-                AsyncImage(
-                    model = it.url,
-                    contentDescription = "media",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(RoundedCornerShape(Dimens.circle))
-                        .shadow(
-                            elevation = Dimens.shadow,
-                            shape = RoundedCornerShape(Dimens.circle)
-                        )
-                )
+                Box(
+                    modifier = Modifier.padding(vertical = Dimens.gapMedium)
+                ){
+                    AsyncImage(
+                        model = it,
+                        contentDescription = "media logo",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(RoundedCornerShape(Dimens.circle))
+                    )
+                }
             }
         }
     }
@@ -478,24 +484,22 @@ private fun MediaOpList(
             modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(Dimens.gapMedium)
                 .clip(shape = RoundedCornerShape(Dimens.cornerRadius)).background(
                     color = NewsTheme.colors.surface
-                ).shadow(
-                    elevation = Dimens.shadow,
                 ),
             horizontalArrangement = Arrangement.spacedBy(Dimens.gapMedium)
         ) {
             mediaOp.forEach {
-                AsyncImage(
-                    model = it,
-                    contentDescription = "media",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(RoundedCornerShape(Dimens.circle))
-                        .shadow(
-                            elevation = Dimens.shadow,
-                            shape = RoundedCornerShape(Dimens.circle)
-                        )
-                )
+                Box(
+                    modifier = Modifier.padding(vertical = Dimens.gapMedium)
+                ){
+                    AsyncImage(
+                        model = it,
+                        contentDescription = "media logo",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(RoundedCornerShape(Dimens.circle))
+                    )
+                }
             }
         }
     }
@@ -593,9 +597,7 @@ private fun OriginalSource(
                     sourceAll?.let {
                         it.forEach { source ->
                             SourceCard(
-                                media = source.name,
-                                title = source.title,
-                                onClick = {}
+                                source = source
                             )
                         }
                     }
@@ -604,9 +606,7 @@ private fun OriginalSource(
                     sourceLeft?.let {
                         it.forEach { source ->
                             SourceCard(
-                                media = source.name,
-                                title = source.title,
-                                onClick = {}
+                                source = source
                             )
                         }
                     }
@@ -615,9 +615,7 @@ private fun OriginalSource(
                     sourceCenter?.let {
                         it.forEach { source ->
                             SourceCard(
-                                media = source.name,
-                                title = source.title,
-                                onClick = {}
+                                source = source
                             )
                         }
                     }
@@ -626,9 +624,7 @@ private fun OriginalSource(
                     sourceRight?.let {
                         it.forEach { source ->
                             SourceCard(
-                                media = source.name,
-                                title = source.title,
-                                onClick = {}
+                                source = source
                             )
                         }
                     }
@@ -638,12 +634,30 @@ private fun OriginalSource(
     }
 }
 
+@SuppressLint("SetJavaScriptEnabled")
 @Composable
 private fun SourceCard(
-    media: String,
-    title: String,
-    onClick: () -> Unit
+    source: OriginalSource
 ){
+    var showOriginalNews by remember { mutableStateOf(false) }
+
+    if (showOriginalNews) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(NewsTheme.colors.surface)
+        ) {
+            AndroidView(
+                factory = { context ->
+                    WebView(context).apply {
+                        settings.javaScriptEnabled = true
+                        loadUrl(source.url)
+                    }
+                },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -661,11 +675,13 @@ private fun SourceCard(
             verticalArrangement = Arrangement.spacedBy(Dimens.gapSmall)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().clickable { onClick() },
+                modifier = Modifier.fillMaxWidth().clickable {
+                    showOriginalNews = true
+                },
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = media,
+                    text = source.name,
                     style = NewsTheme.typography.media,
                     color = NewsTheme.colors.textPrimary
                 )
@@ -680,10 +696,20 @@ private fun SourceCard(
                 color = NewsTheme.colors.divider
             )
             Text(
-                text = title,
+                text = source.title,
                 style = NewsTheme.typography.description,
                 color = NewsTheme.colors.textPrimary
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MediaListPreview(){
+    NewsTheme {
+        MediaList(
+            media = emptyList()
+        )
     }
 }
