@@ -161,7 +161,7 @@ private fun DetailContent(
                         keyword = newsInfo.left.keywords
                     )
                     MediaList(
-                        media = newsInfo.left.imageUrls
+                        media = newsInfo.left.originalSource
                     )
                 } else {
                     Summary(
@@ -189,7 +189,7 @@ private fun DetailContent(
                         keyword = newsInfo.center.keywords
                     )
                     MediaList(
-                        media = newsInfo.center.imageUrls
+                        media = newsInfo.center.originalSource
                     )
                 }else {
                     Summary(
@@ -217,7 +217,7 @@ private fun DetailContent(
                         keyword = newsInfo.right.keywords
                     )
                     MediaList(
-                        media = newsInfo.right.imageUrls
+                        media = newsInfo.right.originalSource
                     )
                 }else {
                     Summary(
@@ -413,7 +413,7 @@ private fun KeywordAnalysis(
 
 @Composable
 private fun MediaList(
-    media: List<String>,
+    media: List<OriginalSource>,
 ){
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -431,16 +431,17 @@ private fun MediaList(
                 ),
             horizontalArrangement = Arrangement.spacedBy(Dimens.gapMedium)
         ) {
-            media.forEach {
-                Box(
-                    modifier = Modifier.padding(vertical = Dimens.gapMedium)
-                ){
+            Box(
+                modifier = Modifier.padding(Dimens.gapSmall)
+            ){
+                media.forEach {
                     AsyncImage(
-                        model = it,
+                        model = it.logo,
                         contentDescription = "media logo",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(48.dp)
+                            .padding(Dimens.gapSmall)
                             .clip(RoundedCornerShape(Dimens.circle))
                     )
                 }

@@ -57,7 +57,9 @@ class HotNewsRemoteMediator(
                 if(loadType == LoadType.REFRESH) {
                     db.newsDao().clearAll()
                 }
-                val newsEntities = response.result!!.clusters.map { it.toDomain(loadKey) }.map {
+                val newsEntities = response.result!!.clusters.map {
+                    it.toDomain(loadKey, response.result.pagination.pages)
+                }.map {
                     it.asHotEntity(category = category)
                 }
                 db.newsDao().insertNewsList(newsEntities)

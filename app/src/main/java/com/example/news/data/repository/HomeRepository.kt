@@ -13,6 +13,7 @@ interface HomeRepository {
         limit: Int,
     ): Flow<Resource<List<News>>>
 
+    @WorkerThread
     suspend fun fetchLatestNews(
         page: Int,
         limit: Int,

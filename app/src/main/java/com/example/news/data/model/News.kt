@@ -7,5 +7,6 @@ data class News(
     val left: Int,
     val right: Int,
     val center: Int,
-    val page: Int
+    val page: Int,
+    val totalPage: Int,
 )

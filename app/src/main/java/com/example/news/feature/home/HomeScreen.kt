@@ -103,7 +103,7 @@ private fun HomeContent(
     ) {
         item {
             SectionHeader(
-                header = "핫 뉴스 \uD83D\uDE80",
+                header = "핫 뉴스",
                 bool = true,
             )
         }
@@ -135,13 +135,14 @@ private fun HomeContent(
                         fetchPrev = fetchPrevHotNews,
                         fetchNext = fetchNextHotNews,
                         fetchThis = fetchThisHotNews,
+                        totalPages = hotNewsList[0].totalPage,
                     )
                 }
             }
         }
         item {
             SectionHeader(
-                header = "최신 뉴스 \uD83D\uDCF0",
+                header = "최신 뉴스",
                 bool = false,
             )
         }
@@ -173,6 +174,7 @@ private fun HomeContent(
                         fetchPrev = fetchPrevLatestNews,
                         fetchNext = fetchNextLatestNews,
                         fetchThis = fetchThisLatestNews,
+                        totalPages = latestNewsList[0].totalPage,
                     )
                 }
             }
@@ -218,6 +220,7 @@ private fun SectionHeader(
 @Composable
 private fun NewsListFooter(
     index: Int,
+    totalPages: Int,
     fetchPrev: () -> Unit,
     fetchNext: () -> Unit,
     fetchThis: (Int) -> Unit,
@@ -275,22 +278,25 @@ private fun NewsListFooter(
                     color = NewsTheme.colors.optionBorderFocused
                 )
             }
-            Column {
-                Text(
-                    modifier = Modifier
-                        .padding(
-                            horizontal = Dimens.gapSmall
-                        )
-                        .clickable {
-                            fetchThis(index + 1)
-                        },
-                    text = "${index + 1}",
-                    style = NewsTheme.typography.option,
-                    color = NewsTheme.colors.optionTextUnfocused
-                )
+            if( index < totalPages){
+                Column {
+                    Text(
+                        modifier = Modifier
+                            .padding(
+                                horizontal = Dimens.gapSmall
+                            )
+                            .clickable {
+                                fetchThis(index + 1)
+                            },
+                        text = "${index + 1}",
+                        style = NewsTheme.typography.option,
+                        color = NewsTheme.colors.optionTextUnfocused
+                    )
+                }
             }
             IconButton(
                 onClick = fetchNext,
+                enabled = index < totalPages,
                 colors = IconButtonDefaults.iconButtonColors(
                     disabledContentColor = NewsTheme.colors.iconDefault,
                     contentColor = NewsTheme.colors.iconSelected

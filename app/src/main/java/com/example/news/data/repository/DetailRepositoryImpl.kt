@@ -1,7 +1,7 @@
 package com.example.news.data.repository
 
-import android.util.Log
 import androidx.annotation.WorkerThread
+import com.example.news.core.Resource
 import com.example.news.data.Dispatcher
 import com.example.news.data.NewsAppDispatchers
 import com.example.news.data.dto.NewsInfo
@@ -22,24 +22,19 @@ class DetailRepositoryImpl @Inject constructor(
     @WorkerThread
     override suspend fun fetchNewsDetail(
         id: String,
-        onComplete: () -> Unit,
-        onError: (String?) -> Unit
-    ): Flow<NewsInfo?> = flow {
+    ): Flow<Resource<NewsInfo>> = flow {
+        emit(Resource.Loading())
         try {
-            Log.d("fetch", "fetched: $id")
             val response = newsClient.getNewsDetail(id = id)
             if (response.isSuccess){
-                emit(response.result)
-                Log.d("newsInfo", response.toString())
-                onComplete()
+                emit(Resource.Success(response.result))
             }else{
-                Log.d("error info", response.code)
-                onError(response.message)
+                emit(Resource.Error(response.message))
             }
         }catch (e: HttpException){
-            onError(e.message)
+            emit(Resource.Error(e.toString()))
         }catch (e: IOException){
-            onError(e.message)
+            emit(Resource.Error(e.toString()))
         }
     }.flowOn(ioDispatcher)
 

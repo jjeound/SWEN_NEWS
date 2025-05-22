@@ -66,46 +66,6 @@ fun SharedTransitionScope.SettingScreen(){
                 verticalArrangement = Arrangement.spacedBy(Dimens.gapMedium)
             ) {
                 Text(
-                    text = "앱 설정",
-                    style = NewsTheme.typography.header,
-                    color = NewsTheme.colors.textPrimary
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth().clickable{},
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "1",
-                        style = NewsTheme.typography.menu,
-                        color = NewsTheme.colors.textPrimary
-                    )
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.chevron_right),
-                        contentDescription = "chevron right",
-                        tint = NewsTheme.colors.iconDefault
-                    )
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth().clickable{},
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "2",
-                        style = NewsTheme.typography.menu,
-                        color = NewsTheme.colors.textPrimary
-                    )
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.chevron_right),
-                        contentDescription = "chevron right",
-                        tint = NewsTheme.colors.iconDefault
-                    )
-                }
-            }
-            Column(
-                modifier = Modifier.fillMaxWidth().padding(Dimens.gapMedium),
-                verticalArrangement = Arrangement.spacedBy(Dimens.gapMedium)
-            ) {
-                Text(
                     text = "지원 및 도움",
                     style = NewsTheme.typography.header,
                     color = NewsTheme.colors.textPrimary
@@ -141,21 +101,6 @@ fun SharedTransitionScope.SettingScreen(){
                 ) {
                     Text(
                         text = "About this app",
-                        style = NewsTheme.typography.menu,
-                        color = NewsTheme.colors.textPrimary
-                    )
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.chevron_right),
-                        contentDescription = "chevron right",
-                        tint = NewsTheme.colors.iconDefault
-                    )
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth().clickable{},
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "System",
                         style = NewsTheme.typography.menu,
                         color = NewsTheme.colors.textPrimary
                     )

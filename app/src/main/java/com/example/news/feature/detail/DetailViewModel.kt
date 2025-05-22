@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.news.core.Resource
 import com.example.news.data.dto.NewsInfo
 import com.example.news.data.repository.DetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -29,10 +31,23 @@ class DetailViewModel @Inject constructor(
     val newsDetail: StateFlow<NewsInfo?> =
         id.filterNotNull().flatMapLatest { id ->
             repository.fetchNewsDetail(
-                id = id,
-                onComplete = { uiState.tryEmit(DetailsUiState.Idle) },
-                onError = { uiState.tryEmit(DetailsUiState.Error(it)) },
-            )
+                id = id
+            ).map {
+                when(it){
+                    is Resource.Success -> {
+                        uiState.tryEmit(DetailsUiState.Idle)
+                        it.data
+                    }
+                    is Resource.Error -> {
+                        uiState.tryEmit(DetailsUiState.Error(it.message))
+                        null
+                    }
+                    is Resource.Loading -> {
+                        uiState.tryEmit(DetailsUiState.Loading)
+                        null
+                    }
+                }
+            }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),

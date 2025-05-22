@@ -12,7 +12,5 @@ object Dimens {
     val cornerRadius = 12.dp
     val circle = 48.dp
     val border = 1.dp
-    val shadow = 4.dp
     val homeHorizontalPadding = 30.dp
-    val homeVerticalPadding = 20.dp
 }

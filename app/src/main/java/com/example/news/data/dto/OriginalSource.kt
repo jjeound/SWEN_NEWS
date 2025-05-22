@@ -9,4 +9,6 @@ data class OriginalSource(
     val url: String,
     @SerializedName("제목")
     val title: String,
+    @SerializedName("press_icon")
+    val logo: String,
 )

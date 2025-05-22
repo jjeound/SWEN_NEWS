@@ -22,7 +22,7 @@ fun MoreTopBar(
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = if(isHot)"핫 뉴스 \uD83D\uDE80" else "최신 뉴스 \uD83D\uDCF0",
+                text = if(isHot)"핫 뉴스" else "최신 뉴스",
                 color = NewsTheme.colors.textPrimary,
                 style = NewsTheme.typography.appBarTitle
             )

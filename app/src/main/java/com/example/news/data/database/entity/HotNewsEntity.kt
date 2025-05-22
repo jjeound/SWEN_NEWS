@@ -12,5 +12,6 @@ data class HotNewsEntity(
     val right: Int,
     val center: Int,
     val page: Int,
-    val category: String?
+    val category: String?,
+    val totalPages: Int,
 )

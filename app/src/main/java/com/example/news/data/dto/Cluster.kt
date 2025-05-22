@@ -13,7 +13,7 @@ data class Cluster(
     @SerializedName("representative_image")
     val representativeImage: String,
 ){
-    fun toDomain(page: Int): News{
+    fun toDomain(page: Int, totalPage: Int): News{
         return News(
             id = id,
             title = title,
@@ -21,7 +21,8 @@ data class Cluster(
             left = (biasRatio.left * 100).toInt(),
             right = (biasRatio.right * 100).toInt(),
             center = (biasRatio.center * 100).toInt(),
-            page = page
+            page = page,
+            totalPage = totalPage
         )
     }
 }

@@ -27,6 +27,4 @@ data class NewsInfo(
     val title: String,
     @SerializedName("updated_at")
     val updatedAt: String,
-    @SerializedName("original_source")
-    val originalSource: OriginalSource,
 )

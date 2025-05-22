@@ -14,7 +14,8 @@ object LatestNewsEntityMapper : EntityMapper<News, LatestNewsEntity> {
             right = domain.right,
             center = domain.center,
             page = domain.page,
-            category = category
+            category = category,
+            totalPages = domain.totalPage
         )
     }
 
@@ -27,6 +28,7 @@ object LatestNewsEntityMapper : EntityMapper<News, LatestNewsEntity> {
             right = entity.right,
             center = entity.center,
             page = entity.page,
+            totalPage = entity.totalPages
         )
     }
 }
