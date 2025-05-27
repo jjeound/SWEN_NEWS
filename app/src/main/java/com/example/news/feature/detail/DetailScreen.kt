@@ -1,6 +1,8 @@
 package com.example.news.feature.detail
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.webkit.WebView
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,6 +59,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -69,6 +74,7 @@ import com.example.news.navigation.currentComposeNavigator
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
@@ -428,23 +434,19 @@ private fun MediaList(
             modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())
                 .clip(shape = RoundedCornerShape(Dimens.cornerRadius)).background(
                     color = NewsTheme.colors.blueBackground
-                ),
-            horizontalArrangement = Arrangement.spacedBy(Dimens.gapMedium)
+                ).padding(Dimens.gapSmall),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.gapMedium),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
-                modifier = Modifier.padding(Dimens.gapSmall)
-            ){
-                media.forEach {
-                    AsyncImage(
-                        model = it.logo,
-                        contentDescription = "media logo",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(48.dp)
-                            .padding(Dimens.gapSmall)
-                            .clip(RoundedCornerShape(Dimens.circle))
-                    )
-                }
+            media.forEach {
+                AsyncImage(
+                    model = it.logo,
+                    contentDescription = "media logo",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(Dimens.circle))
+                )
             }
         }
     }
@@ -478,17 +480,27 @@ private fun MediaOpList(
                 color = NewsTheme.colors.textThird
             )
         }
-        Row(
-            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(Dimens.gapMedium)
-                .clip(shape = RoundedCornerShape(Dimens.cornerRadius)).background(
-                    color = NewsTheme.colors.surface
-                ),
-            horizontalArrangement = Arrangement.spacedBy(Dimens.gapMedium)
-        ) {
-            mediaOp.forEach {
-                Box(
-                    modifier = Modifier.padding(vertical = Dimens.gapMedium)
-                ){
+        if(mediaOp.isEmpty()){
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ){
+                Text(
+                    text = "데이터가 없습니다.",
+                    style = NewsTheme.typography.body,
+                    color = NewsTheme.colors.textPrimary
+                )
+            }
+        }else{
+            Row(
+                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(Dimens.gapMedium)
+                    .clip(shape = RoundedCornerShape(Dimens.cornerRadius)).background(
+                        color = NewsTheme.colors.surface
+                    ).padding(Dimens.gapSmall),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.gapMedium),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                mediaOp.forEach {
                     AsyncImage(
                         model = it,
                         contentDescription = "media logo",
@@ -640,20 +652,10 @@ private fun SourceCard(
     var showOriginalNews by remember { mutableStateOf(false) }
 
     if (showOriginalNews) {
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(NewsTheme.colors.surface)
-        ) {
-            AndroidView(
-                factory = { context ->
-                    WebView(context).apply {
-                        settings.javaScriptEnabled = true
-                        loadUrl(source.url)
-                    }
-                },
-                modifier = Modifier.fillMaxSize()
-            )
+        val context = LocalContext.current
+        LaunchedEffect(Unit) {
+            val intent = Intent(Intent.ACTION_VIEW, source.url.toUri())
+            context.startActivity(intent)
         }
     }
     Card(
