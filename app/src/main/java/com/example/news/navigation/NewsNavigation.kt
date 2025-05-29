@@ -8,6 +8,7 @@ import androidx.navigation.toRoute
 import com.example.news.feature.detail.DetailScreen
 import com.example.news.feature.home.HomeScreen
 import com.example.news.feature.more.MoreScreen
+import com.example.news.feature.setting.ATAScreen
 import com.example.news.feature.setting.SettingScreen
 
 context(SharedTransitionScope)
@@ -28,5 +29,8 @@ fun NavGraphBuilder.newsNavigation() {
     }
     composable<Screen.Setting>{
         SettingScreen()
+    }
+    composable<Screen.ATA> {
+        ATAScreen()
     }
 }
