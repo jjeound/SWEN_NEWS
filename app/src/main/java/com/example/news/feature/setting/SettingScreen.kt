@@ -16,11 +16,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import com.example.news.R
 import com.example.news.core.Dimens
+import com.example.news.navigation.Screen
 import com.example.news.navigation.currentComposeNavigator
 import com.example.news.ui.theme.NewsTheme
 
@@ -59,11 +61,11 @@ fun SharedTransitionScope.SettingScreen(){
                 horizontal = Dimens.horizontalPadding,
                 vertical = Dimens.verticalPadding
             ),
-            verticalArrangement = Arrangement.spacedBy(Dimens.gapLarge)
+            verticalArrangement = Arrangement.spacedBy(Dimens.gapMedium)
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(Dimens.gapMedium),
-                verticalArrangement = Arrangement.spacedBy(Dimens.gapMedium)
+                verticalArrangement = Arrangement.spacedBy(Dimens.gapSmall)
             ) {
                 Text(
                     text = "지원 및 도움",
@@ -72,23 +74,28 @@ fun SharedTransitionScope.SettingScreen(){
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth().clickable{},
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "Feedback",
                         style = NewsTheme.typography.menu,
                         color = NewsTheme.colors.textPrimary
                     )
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.chevron_right),
-                        contentDescription = "chevron right",
-                        tint = NewsTheme.colors.iconDefault
-                    )
+                    IconButton(
+                        onClick = {}
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.chevron_right),
+                            contentDescription = "chevron right",
+                            tint = NewsTheme.colors.iconDefault
+                        )
+                    }
                 }
             }
             Column(
                 modifier = Modifier.fillMaxWidth().padding(Dimens.gapMedium),
-                verticalArrangement = Arrangement.spacedBy(Dimens.gapMedium)
+                verticalArrangement = Arrangement.spacedBy(Dimens.gapSmall)
             ) {
                 Text(
                     text = "약관 및 정책",
@@ -97,33 +104,45 @@ fun SharedTransitionScope.SettingScreen(){
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth().clickable{},
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "About this app",
                         style = NewsTheme.typography.menu,
                         color = NewsTheme.colors.textPrimary
                     )
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.chevron_right),
-                        contentDescription = "chevron right",
-                        tint = NewsTheme.colors.iconDefault
-                    )
+                    IconButton(
+                        onClick = {
+                            composeNavigator.navigate(Screen.ATA)
+                        }
+                    ){
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.chevron_right),
+                            contentDescription = "chevron right",
+                            tint = NewsTheme.colors.iconDefault
+                        )
+                    }
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth().clickable{},
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "FAQ",
                         style = NewsTheme.typography.menu,
                         color = NewsTheme.colors.textPrimary
                     )
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.chevron_right),
-                        contentDescription = "chevron right",
-                        tint = NewsTheme.colors.iconDefault
-                    )
+                    IconButton(
+                        onClick = {}
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.chevron_right),
+                            contentDescription = "chevron right",
+                            tint = NewsTheme.colors.iconDefault
+                        )
+                    }
                 }
             }
         }
