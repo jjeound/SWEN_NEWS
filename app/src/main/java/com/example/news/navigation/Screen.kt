@@ -11,4 +11,6 @@ sealed interface Screen{
     data class Detail(val id: String): Screen
     @Serializable
     data object Setting: Screen
+    @Serializable
+    data object ATA: Screen
 }
