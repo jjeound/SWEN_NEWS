@@ -28,14 +28,10 @@ class MoreViewModel @Inject constructor(
     private val _newsList = MutableStateFlow<PagingData<News>>(PagingData.empty())
     val newsList: StateFlow<PagingData<News>> = _newsList.asStateFlow()
 
-    private var _fetched = false
-
     fun fetchNewsList(
         isHot: Boolean,
         category: String? = null,
     ) {
-        if (_fetched) return
-        _fetched = true
         viewModelScope.launch {
             if (isHot){
                 repository.fetchHotNews(category).map {
