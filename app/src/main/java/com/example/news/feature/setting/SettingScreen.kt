@@ -73,7 +73,9 @@ fun SharedTransitionScope.SettingScreen(){
                     color = NewsTheme.colors.textPrimary
                 )
                 Row(
-                    modifier = Modifier.fillMaxWidth().clickable{},
+                    modifier = Modifier.fillMaxWidth().clickable{
+                        composeNavigator.navigate(Screen.SettingDetail(0))
+                    },
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -103,7 +105,9 @@ fun SharedTransitionScope.SettingScreen(){
                     color = NewsTheme.colors.textPrimary
                 )
                 Row(
-                    modifier = Modifier.fillMaxWidth().clickable{},
+                    modifier = Modifier.fillMaxWidth().clickable{
+                        composeNavigator.navigate(Screen.SettingDetail(1))
+                    },
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -113,9 +117,7 @@ fun SharedTransitionScope.SettingScreen(){
                         color = NewsTheme.colors.textPrimary
                     )
                     IconButton(
-                        onClick = {
-                            composeNavigator.navigate(Screen.ATA)
-                        }
+                        onClick = {}
                     ){
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.chevron_right),
@@ -125,7 +127,9 @@ fun SharedTransitionScope.SettingScreen(){
                     }
                 }
                 Row(
-                    modifier = Modifier.fillMaxWidth().clickable{},
+                    modifier = Modifier.fillMaxWidth().clickable{
+                        composeNavigator.navigate(Screen.SettingDetail(2))
+                    },
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
