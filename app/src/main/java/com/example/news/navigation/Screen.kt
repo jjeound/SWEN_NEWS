@@ -12,5 +12,5 @@ sealed interface Screen{
     @Serializable
     data object Setting: Screen
     @Serializable
-    data object ATA: Screen
+    data class SettingDetail(val order: Int): Screen
 }
